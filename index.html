@@ -3,573 +3,215 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bhlyto — HPC Engineer Portfolio</title>
+  <title>Bhlyto :: HPC Engineer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & tokens ───────────────────────────────────────── */
+    /* === RESET === */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #080b10;
-      --bg2:       #0e1219;
-      --bg3:       #151b25;
-      --border:    rgba(255,255,255,.07);
-      --border-hi: rgba(99,179,255,.35);
-      --text:      #dde6f0;
-      --muted:     #6b7a8d;
-      --accent1:   #63b3ff;   /* electric blue  */
-      --accent2:   #b388ff;   /* soft violet    */
-      --accent3:   #4fffb0;   /* mint green     */
-      --glow1:     rgba(99,179,255,.18);
-      --glow2:     rgba(179,136,255,.15);
-      --radius:    14px;
-      --transition: .25s cubic-bezier(.4,0,.2,1);
+      --black:  #000000;
+      --bg:     #080808;
+      --bg2:    #0f0f0f;
+      --bg3:    #141414;
+      --green:  #00ff41;
+      --green2: #39ff14;
+      --green3: #00cc33;
+      --green4: #007722;
+      --green5: #003311;
+      --text:   #c8ffc8;
+      --muted:  #669966;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* ── Animated mesh background ─────────────────────────────── */
-    body::before {
+    /* CRT scanlines */
+    body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 20% -10%, rgba(99,179,255,.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 85% 110%, rgba(179,136,255,.10) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(79,255,176,.04) 0%, transparent 70%);
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.06) 2px,
+        rgba(0,0,0,.06) 4px
+      );
       pointer-events: none;
-      z-index: 0;
+      z-index: 9999;
     }
 
-    /* ── Nav ──────────────────────────────────────────────────── */
+    a { color: var(--green3); text-decoration: none; }
+    a:hover { color: var(--green); text-decoration: underline; }
+
+    /* === NAV === */
     nav {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 100;
+      background: var(--black);
+      border-bottom: 1px solid var(--green4);
+      padding: .45rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: .9rem 2rem;
-      background: rgba(8,11,16,.75);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
     }
 
-    nav .logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
-      font-size: .95rem;
-      color: var(--accent1);
-      letter-spacing: .04em;
+    .logo {
+      font-family: 'VT323', monospace;
+      font-size: 1.5rem;
+      color: var(--green);
+      letter-spacing: .06em;
     }
 
-    nav .logo span { color: var(--accent2); }
+    .logo::before { content: '> '; color: var(--green4); }
 
     nav ul {
       list-style: none;
       display: flex;
-      gap: 1.8rem;
+      gap: 1.5rem;
     }
 
     nav ul a {
-      font-size: .85rem;
-      font-weight: 500;
+      font-size: .8rem;
+      text-transform: lowercase;
+      letter-spacing: .06em;
       color: var(--muted);
       text-decoration: none;
-      letter-spacing: .03em;
-      transition: color var(--transition);
     }
 
-    nav ul a:hover { color: var(--text); }
+    nav ul a::before { content: '['; color: var(--green5); }
+    nav ul a::after  { content: ']'; color: var(--green5); }
+    nav ul a:hover   { color: var(--green); text-decoration: none; }
 
-    /* ── Hero ─────────────────────────────────────────────────── */
+    /* === HERO === */
     #hero {
-      position: relative;
-      z-index: 1;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 7rem 1.5rem 5rem;
+      padding: 6rem 2rem 4rem;
+      max-width: 860px;
+      margin: 0 auto;
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .75rem;
-      color: var(--accent3);
-      background: rgba(79,255,176,.08);
-      border: 1px solid rgba(79,255,176,.2);
-      border-radius: 999px;
-      padding: .3rem .9rem;
-      margin-bottom: 1.6rem;
-      letter-spacing: .06em;
-      animation: fadeSlideDown .6s ease both;
+    .prompt-line {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: .5rem;
     }
 
-    .hero-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent3);
-      box-shadow: 0 0 8px var(--accent3);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .3; }
-    }
+    .prompt-line::before { content: 'bhlyto@cave:~$ '; color: var(--green); }
 
     #hero h1 {
-      font-size: clamp(3rem, 9vw, 6.5rem);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -.03em;
-      background: linear-gradient(135deg, #fff 0%, var(--accent1) 45%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: fadeSlideDown .7s .1s ease both;
+      font-family: 'VT323', monospace;
+      font-size: clamp(4rem, 11vw, 7.5rem);
+      color: var(--green);
+      line-height: 1;
+      letter-spacing: .06em;
+      text-shadow: 0 0 18px rgba(0,255,65,.35);
     }
 
-    #hero .subtitle {
-      margin-top: 1.2rem;
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      font-weight: 400;
-      color: var(--muted);
-      max-width: 540px;
-      line-height: 1.7;
-      animation: fadeSlideDown .7s .2s ease both;
+    .hero-tagline {
+      margin-top: 1rem;
+      font-size: .9rem;
+      color: var(--text);
+      max-width: 560px;
+      line-height: 1.8;
+    }
+
+    .hero-tagline .hl { color: var(--green); }
+
+    .cursor {
+      display: inline-block;
+      width: .55em;
+      height: 1em;
+      background: var(--green);
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
     }
 
     .hero-cta {
       display: flex;
-      gap: 1rem;
-      margin-top: 2.5rem;
+      gap: .8rem;
+      margin-top: 2rem;
       flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeSlideDown .7s .3s ease both;
     }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .72rem 1.6rem;
-      border-radius: 999px;
-      font-size: .9rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all var(--transition);
-      letter-spacing: .02em;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      color: #fff;
-      box-shadow: 0 4px 24px rgba(99,179,255,.25);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(99,179,255,.4);
-    }
-
-    .btn-ghost {
-      border: 1px solid var(--border-hi);
-      color: var(--text);
-      background: transparent;
-    }
-
-    .btn-ghost:hover {
-      background: rgba(99,179,255,.07);
-      transform: translateY(-2px);
-    }
-
-    .scroll-hint {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .4rem;
-      font-size: .72rem;
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      font-size: .82rem;
+      padding: .4rem 1.1rem;
+      border: 1px solid var(--green4);
       color: var(--muted);
-      letter-spacing: .08em;
-      animation: fadeIn 1s 1s ease both;
+      background: transparent;
+      text-decoration: none;
+      letter-spacing: .06em;
+      transition: background .12s, color .12s, border-color .12s;
     }
 
-    .scroll-hint .arrow {
-      width: 20px;
-      height: 20px;
-      border-right: 2px solid var(--muted);
-      border-bottom: 2px solid var(--muted);
-      transform: rotate(45deg);
-      animation: bounce 1.8s infinite;
+    .btn:hover { background: var(--green5); color: var(--green); border-color: var(--green3); text-decoration: none; }
+
+    .btn-primary { border-color: var(--green3); color: var(--green); }
+    .btn-primary:hover { background: var(--green3); color: var(--black); }
+
+    /* === DIVIDER === */
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--green5);
     }
 
-    @keyframes bounce {
-      0%, 100% { transform: rotate(45deg) translateY(0); }
-      50%       { transform: rotate(45deg) translateY(5px); }
-    }
-
-    /* ── Section layout ───────────────────────────────────────── */
+    /* === SECTIONS === */
     section {
-      position: relative;
-      z-index: 1;
-      max-width: 1160px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 5rem 1.5rem;
+      padding: 4rem 2rem;
     }
 
-    .section-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .75rem;
-      font-weight: 500;
-      color: var(--accent1);
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      margin-bottom: .7rem;
+    .section-header { margin-bottom: 2.5rem; }
+
+    .section-cmd {
+      font-size: .8rem;
+      color: var(--green3);
+      margin-bottom: .3rem;
     }
+
+    .section-cmd::before { content: '$ '; color: var(--green4); }
 
     .section-title {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 700;
-      letter-spacing: -.025em;
-      color: #fff;
-      margin-bottom: .6rem;
+      font-family: 'VT323', monospace;
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      color: var(--green);
+      letter-spacing: .06em;
+      line-height: 1.1;
     }
 
     .section-sub {
-      font-size: .95rem;
-      color: var(--muted);
-      max-width: 480px;
-      line-height: 1.7;
-      margin-bottom: 3rem;
-    }
-
-    /* ── Featured project cards ───────────────────────────────── */
-    .featured-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .feat-card {
-      position: relative;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      overflow: hidden;
-      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
-      opacity: 0;
-      transform: translateY(24px);
-    }
-
-    .feat-card.visible {
-      opacity: 1;
-      transform: none;
-      transition: opacity .5s ease, transform .5s ease, border-color var(--transition), box-shadow var(--transition);
-    }
-
-    .feat-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--glow1) 0%, var(--glow2) 100%);
-      opacity: 0;
-      transition: opacity var(--transition);
-      pointer-events: none;
-    }
-
-    .feat-card:hover {
-      border-color: var(--border-hi);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 0 1px var(--border-hi);
-    }
-
-    .feat-card:hover::before { opacity: 1; }
-
-    .feat-card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .feat-card-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-
-    .feat-card-link {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
       font-size: .8rem;
       color: var(--muted);
-      text-decoration: none;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: .25rem .75rem;
-      transition: all var(--transition);
-      flex-shrink: 0;
+      margin-top: .3rem;
     }
 
-    .feat-card-link:hover {
-      color: var(--accent1);
-      border-color: var(--border-hi);
-    }
-
-    .feat-card h3 {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.05rem;
-      font-weight: 500;
-      color: #fff;
-      letter-spacing: -.01em;
-    }
-
-    .feat-card .summary {
-      font-size: .9rem;
-      color: var(--text);
-      line-height: 1.65;
-    }
-
-    .feat-card .bullets {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: .45rem;
-      flex: 1;
-    }
-
-    .feat-card .bullets li {
-      font-size: .82rem;
-      color: var(--muted);
-      line-height: 1.55;
-      padding-left: 1rem;
-      position: relative;
-    }
-
-    .feat-card .bullets li::before {
-      content: '▹';
-      position: absolute;
-      left: 0;
-      color: var(--accent1);
-    }
-
-    .feat-card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .4rem;
-      margin-top: auto;
-    }
-
-    .tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .7rem;
-      padding: .2rem .6rem;
-      border-radius: 999px;
-      background: rgba(99,179,255,.08);
-      border: 1px solid rgba(99,179,255,.15);
-      color: var(--accent1);
-      letter-spacing: .04em;
-    }
-
-    .tag.violet {
-      background: rgba(179,136,255,.08);
-      border-color: rgba(179,136,255,.15);
-      color: var(--accent2);
-    }
-
-    .tag.green {
-      background: rgba(79,255,176,.08);
-      border-color: rgba(79,255,176,.15);
-      color: var(--accent3);
-    }
-
-    /* ── All repos grid ───────────────────────────────────────── */
-    #repos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-
-    .repo-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.2rem 1.4rem;
-      display: flex;
-      flex-direction: column;
-      gap: .55rem;
-      transition: border-color var(--transition), transform var(--transition), background var(--transition);
-      opacity: 0;
-      transform: translateY(16px);
-      text-decoration: none;
-    }
-
-    .repo-card.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    .repo-card:hover {
-      border-color: var(--border-hi);
-      background: var(--bg3);
-      transform: translateY(-3px);
-    }
-
-    .repo-card-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .9rem;
-      font-weight: 500;
-      color: var(--accent1);
-      word-break: break-word;
-    }
-
-    .repo-card-desc {
-      font-size: .82rem;
-      color: var(--muted);
-      line-height: 1.6;
-      flex: 1;
-    }
-
-    .repo-card-meta {
-      display: flex;
-      align-items: center;
-      gap: .9rem;
-      margin-top: .2rem;
-    }
-
-    .repo-lang {
-      display: flex;
-      align-items: center;
-      gap: .35rem;
-      font-size: .75rem;
-      color: var(--muted);
-    }
-
-    .lang-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .repo-stars, .repo-forks {
-      display: flex;
-      align-items: center;
-      gap: .28rem;
-      font-size: .75rem;
-      color: var(--muted);
-    }
-
-    /* ── Loading skeleton ─────────────────────────────────────── */
-    #loading {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .8rem;
-      padding: 3rem 0;
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent1);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Footer ───────────────────────────────────────────────── */
-    footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 2.5rem 1.5rem;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: .8rem;
-    }
-
-    footer a {
-      color: var(--accent1);
-      text-decoration: none;
-    }
-
-    footer a:hover { text-decoration: underline; }
-
-    /* ── Animations ───────────────────────────────────────────── */
-    @keyframes fadeSlideDown {
-      from { opacity: 0; transform: translateY(-16px); }
-      to   { opacity: 1; transform: none; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    /* ── Responsive ───────────────────────────────────────────── */
-    @media (max-width: 600px) {
-      nav ul { display: none; }
-      .hero-cta { flex-direction: column; align-items: center; }
-    }
-
-    /* ── Lang colour map ──────────────────────────────────────── */
-    .lang-C         { background: #555599; }
-    .lang-Python    { background: #3572A5; }
-    .lang-JavaScript{ background: #f1e05a; }
-    .lang-TypeScript{ background: #2b7489; }
-    .lang-Rust      { background: #dea584; }
-    .lang-Go        { background: #00ADD8; }
-    .lang-HTML      { background: #e34c26; }
-    .lang-CSS       { background: #563d7c; }
-    .lang-Shell     { background: #89e051; }
-    .lang-default   { background: #6b7a8d; }
-
-    /* ── About section ────────────────────────────────────────── */
+    /* === ABOUT === */
     .about-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2.5rem;
+      gap: 2rem;
       align-items: start;
     }
 
@@ -578,139 +220,323 @@
     }
 
     .about-bio {
-      font-size: .95rem;
+      font-size: .86rem;
       color: var(--text);
       line-height: 1.8;
     }
 
-    .about-bio p + p { margin-top: 1rem; }
-
-    .exp-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .exp-item {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
-      transition: border-color var(--transition);
-    }
-
-    .exp-item:hover { border-color: var(--border-hi); }
-
-    .exp-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: .5rem;
-    }
-
-    .exp-title {
-      font-size: .95rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .exp-period {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .72rem;
-      color: var(--accent3);
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-top: .15rem;
-    }
-
-    .exp-company {
-      font-size: .82rem;
-      color: var(--accent1);
-      margin-bottom: .6rem;
-      font-weight: 500;
-    }
-
-    .exp-desc {
-      font-size: .82rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
+    .about-bio p { margin-bottom: .8rem; }
 
     .skills-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: .5rem;
-      margin-top: 1.5rem;
+      gap: .35rem;
+      margin-top: 1rem;
     }
 
-    /* ── Divider ──────────────────────────────────────────────── */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin: 0 auto;
+    .tag {
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      font-size: .72rem;
+      padding: .1rem .5rem;
+      border: 1px solid var(--green5);
+      color: var(--green3);
+      background: var(--bg2);
+      letter-spacing: .04em;
     }
+
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .exp-item {
+      border: 1px solid var(--green5);
+      border-left: 3px solid var(--green4);
+      padding: 1rem 1.2rem;
+      background: var(--bg2);
+      transition: border-left-color .15s;
+    }
+
+    .exp-item:hover { border-left-color: var(--green3); }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: .3rem;
+    }
+
+    .exp-title  { font-size: .88rem; color: var(--green); }
+    .exp-period { font-size: .73rem; color: var(--green3); white-space: nowrap; flex-shrink: 0; }
+    .exp-company { font-size: .76rem; color: var(--muted); margin-bottom: .4rem; }
+    .exp-desc    { font-size: .78rem; color: var(--text); line-height: 1.65; opacity: .85; }
+
+    /* === FEATURED CARDS === */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .feat-card {
+      border: 1px solid var(--green5);
+      background: var(--bg2);
+      padding: 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .4s ease, transform .4s ease, border-color .15s;
+    }
+
+    .feat-card.visible { opacity: 1; transform: none; }
+    .feat-card:hover   { border-color: var(--green4); }
+
+    .feat-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .6rem;
+    }
+
+    .feat-card h3 {
+      font-family: 'VT323', monospace;
+      font-size: 1.5rem;
+      color: var(--green);
+      letter-spacing: .05em;
+      line-height: 1;
+    }
+
+    .feat-card h3::before { content: './'; color: var(--green4); }
+
+    .feat-card-link {
+      font-size: .72rem;
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid var(--green5);
+      padding: .1rem .45rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: color .12s, border-color .12s;
+    }
+
+    .feat-card-link:hover { color: var(--green); border-color: var(--green4); text-decoration: none; }
+
+    .feat-card .summary {
+      font-size: .8rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .feat-card .bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .38rem;
+      flex: 1;
+    }
+
+    .feat-card .bullets li {
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.5;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .feat-card .bullets li::before {
+      content: '>> ';
+      position: absolute;
+      left: 0;
+      color: var(--green4);
+    }
+
+    .feat-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+      margin-top: auto;
+    }
+
+    /* === ALL REPOS === */
+    #repos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: .8rem;
+    }
+
+    .repo-card {
+      border: 1px solid var(--green5);
+      background: var(--bg2);
+      padding: .9rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .4s ease, transform .4s ease, border-color .15s, background .15s;
+    }
+
+    .repo-card.visible { opacity: 1; transform: none; }
+    .repo-card:hover   { border-color: var(--green4); background: var(--bg3); text-decoration: none; }
+
+    .repo-card-name {
+      font-size: .88rem;
+      color: var(--green3);
+      word-break: break-all;
+    }
+
+    .repo-card-name::before { content: '> '; color: var(--green4); }
+
+    .repo-card-desc {
+      font-size: .76rem;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .repo-card-meta {
+      display: flex;
+      gap: .8rem;
+      margin-top: .2rem;
+    }
+
+    .repo-lang {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+
+    .lang-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .repo-stars, .repo-forks {
+      display: flex;
+      align-items: center;
+      gap: .2rem;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+
+    /* === LOADING === */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      padding: 2rem 0;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--green5);
+      border-top-color: var(--green3);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* === FOOTER === */
+    footer {
+      border-top: 1px solid var(--green5);
+      padding: 1.2rem 2rem;
+      text-align: center;
+      font-size: .76rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--green3); }
+    footer a:hover { color: var(--green); }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 600px) {
+      nav ul { display: none; }
+      .hero-cta { flex-direction: column; }
+    }
+
+    /* === LANG COLOUR MAP === */
+    .lang-C          { background: #555599; }
+    .lang-Python     { background: #3572A5; }
+    .lang-JavaScript { background: #f1e05a; }
+    .lang-TypeScript { background: #2b7489; }
+    .lang-Rust       { background: #dea584; }
+    .lang-Go         { background: #00ADD8; }
+    .lang-HTML       { background: #e34c26; }
+    .lang-CSS        { background: #563d7c; }
+    .lang-Shell      { background: #89e051; }
+    .lang-default    { background: #6b7a8d; }
   </style>
 </head>
 <body>
 
-  <!-- ── Nav ─────────────────────────────────────────────────── -->
+  <!-- NAV -->
   <nav>
-    <span class="logo">&lt;<span>Bhlyto</span> /&gt;</span>
+    <span class="logo">bhlyto</span>
     <ul>
-      <li><a href="#about">About</a></li>
-      <li><a href="#featured">Projects</a></li>
-      <li><a href="#all-repos">All Repos</a></li>
-      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">GitHub ↗</a></li>
+      <li><a href="#about">about</a></li>
+      <li><a href="#featured">projects</a></li>
+      <li><a href="#all-repos">repos</a></li>
+      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github</a></li>
     </ul>
   </nav>
 
-  <!-- ── Hero ────────────────────────────────────────────────── -->
+  <!-- HERO -->
   <section id="hero">
-    <div class="hero-badge">HPC Engineer · Open to collaboration</div>
-    <h1>Bhlyto</h1>
-    <p class="subtitle">HPC Engineer managing hybrid high-performance computing environments. Automating simulation workflows and optimizing complex pipelines across cloud and on-premise clusters.</p>
+    <p class="prompt-line">cat whoami.txt</p>
+    <h1>BHLYTO</h1>
+    <p class="hero-tagline">
+      <span class="hl">HPC Engineer</span> — Linux, networking, hybrid clusters.<br>
+      Automating simulation pipelines since before it was cool.<br>
+      Shell scripts, Perl, C, and old numerical solvers are home.<span class="cursor"></span>
+    </p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#about">About Me</a>
-      <a class="btn btn-ghost" href="https://github.com/Bhlyto" target="_blank" rel="noopener">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.461-1.11-1.461-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.547 1.376.203 2.393.1 2.646.641.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-        GitHub
-      </a>
-    </div>
-    <div class="scroll-hint">
-      SCROLL
-      <div class="arrow"></div>
+      <a class="btn btn-primary" href="#about">./about</a>
+      <a class="btn" href="https://github.com/Bhlyto" target="_blank" rel="noopener">github --&gt;</a>
     </div>
   </section>
 
-  <div class="divider"></div>
+  <hr class="divider" />
 
-  <!-- ── About ────────────────────────────────────────────────── -->
+  <!-- ABOUT -->
   <section id="about">
-    <div class="section-label">// who I am</div>
-    <h2 class="section-title">About Me</h2>
-    <p class="section-sub">HPC Engineer with 5+ years of experience at Extia.</p>
+    <div class="section-header">
+      <p class="section-cmd">cat about.txt</p>
+      <h2 class="section-title">ABOUT</h2>
+      <p class="section-sub">5+ years @ Extia. HPC. Linux. Scripting. Coffee.</p>
+    </div>
 
     <div class="about-grid">
 
       <div class="about-bio">
-        <p>HPC Engineer specialised in Linux systems and networking, experienced in managing hybrid high-performance computing environments combining cloud resources and on-premise clusters.</p>
-        <p>Strong scripting background (Shell, PowerShell, Perl, Batch, Python) to automate workflows, prepare and launch simulation jobs, and detect and resolve pipeline errors.</p>
-        <p>Previous experience covers numerical simulation software integration for the automotive industry and multi-site infrastructure administration.</p>
-
+        <p>HPC Engineer specialised in Linux systems and networking. Managing hybrid high-performance computing environments — cloud and on-premise clusters, complex numerical simulation workloads.</p>
+        <p>Strong scripting background: Shell, PowerShell, Perl, Batch, Python. Automate workflows, prepare and launch simulation jobs, detect and resolve pipeline errors.</p>
+        <p>Background in numerical simulation software integration (automotive industry) and multi-site infrastructure administration. This site is just a place to drop personal projects done on spare time.</p>
         <div class="skills-grid">
           <span class="tag">Shell</span>
           <span class="tag">Python</span>
           <span class="tag">PowerShell</span>
           <span class="tag">Perl</span>
           <span class="tag">Batch</span>
-          <span class="tag violet">Linux</span>
-          <span class="tag violet">HPC</span>
-          <span class="tag violet">Networking</span>
-          <span class="tag green">Cloud</span>
-          <span class="tag green">On-Premise</span>
-          <span class="tag green">Simulation Workflows</span>
+          <span class="tag">C</span>
+          <span class="tag">Linux</span>
+          <span class="tag">HPC</span>
+          <span class="tag">Networking</span>
+          <span class="tag">Cloud</span>
+          <span class="tag">On-Premise</span>
         </div>
       </div>
 
@@ -718,116 +544,113 @@
         <div class="exp-item">
           <div class="exp-header">
             <span class="exp-title">HPC Engineer</span>
-            <span class="exp-period">Jan 2024 – present</span>
+            <span class="exp-period">2024 – present</span>
           </div>
-          <div class="exp-company">Extia · Bucharest, Romania · Hybrid</div>
-          <p class="exp-desc">Management and technical operations of a hybrid HPC environment. Develop and maintain automation scripts for job preparation, application launch, and workflow automation. Perform low-level Linux troubleshooting and network configuration adjustments for performance optimisation.</p>
+          <div class="exp-company">Extia :: Bucharest, Romania :: Hybrid</div>
+          <p class="exp-desc">Hybrid HPC env management. Automation scripts for job preparation, app launch, workflow automation. Low-level Linux troubleshooting, network config, performance optimisation.</p>
         </div>
 
         <div class="exp-item">
           <div class="exp-header">
-            <span class="exp-title">Numerical Simulation Software Integrator</span>
-            <span class="exp-period">Jan 2021 – Dec 2023</span>
+            <span class="exp-title">Simulation Software Integrator</span>
+            <span class="exp-period">2021 – 2023</span>
           </div>
-          <div class="exp-company">Extia · Remote</div>
-          <p class="exp-desc">Installation, configuration, and integration of simulation applications in HPC environments for the automotive industry. Managed application dependencies, licence servers, and wrote automation scripts for deployment and functional testing.</p>
+          <div class="exp-company">Extia :: Remote</div>
+          <p class="exp-desc">Install, config, integration of simulation apps on HPC clusters (automotive). Dependencies, licence servers, deployment scripts, compatibility troubleshooting.</p>
         </div>
       </div>
 
     </div>
   </section>
 
-  <div class="divider"></div>
+  <hr class="divider" />
 
-  <!-- ── Featured projects ────────────────────────────────────── -->
+  <!-- FEATURED PROJECTS -->
   <section id="featured">
-    <div class="section-label">// featured work</div>
-    <h2 class="section-title">Highlighted Projects</h2>
-    <p class="section-sub">Personal projects that reflect my interests in automation, HPC tooling, and scripting.</p>
+    <div class="section-header">
+      <p class="section-cmd">ls -la ./projects/featured/</p>
+      <h2 class="section-title">PROJECTS</h2>
+      <p class="section-sub">Personal spare-time work. Automation, HPC tooling, experiments.</p>
+    </div>
 
     <div class="featured-grid">
 
       <div class="feat-card">
         <div class="feat-card-header">
-          <div class="feat-card-icon">🤖</div>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">View ↗</a>
+          <h3>SPAS-</h3>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">view ↗</a>
         </div>
-        <h3>SPAS-</h3>
-        <p class="summary">Small Programming Agents System — a local multi-agent workflow runner (Ollama + Python) with a desktop GUI and per-run workspace artifacts.</p>
+        <p class="summary">Small Programming Agents System — local multi-agent workflow runner (Ollama + Python) with desktop GUI and per-run workspace artifacts.</p>
         <ul class="bullets">
-          <li>Designed for both casual and expert users.</li>
-          <li>Integrates Python &amp; Ollama (local LLM) for code generation, compilation, and execution.</li>
-          <li>Provides diagnostics, manages dependencies, and supports agent configuration.</li>
-          <li>Feature-rich GUI: workflow history, package management, environment setup.</li>
+          <li>Python + Ollama (local LLM) for code generation, compile, execute.</li>
+          <li>Diagnostics, dependency management, agent configuration.</li>
+          <li>GUI: workflow history, package management, env setup.</li>
         </ul>
         <div class="feat-card-tags">
           <span class="tag">Python</span>
-          <span class="tag violet">Ollama</span>
-          <span class="tag green">LLM Agents</span>
+          <span class="tag">Ollama</span>
+          <span class="tag">LLM Agents</span>
         </div>
       </div>
 
       <div class="feat-card">
         <div class="feat-card-header">
-          <div class="feat-card-icon">⚙️</div>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">View ↗</a>
+          <h3>BHC_SCHEDULER</h3>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">view ↗</a>
         </div>
-        <h3>BHC_SCHEDULER</h3>
-        <p class="summary">Lightweight job orchestration daemon in C with REST API and optional web dashboard for submitting, tracking, and managing cluster-wide jobs.</p>
+        <p class="summary">Lightweight job orchestration daemon in C with REST API and optional web dashboard for cluster-wide job submission and tracking.</p>
         <ul class="bullets">
-          <li>Priority queue, resource-aware allocation (CPU / RAM / GPU / disk).</li>
-          <li>Live job streaming via Server-Sent Events (SSE).</li>
-          <li>Role-based user &amp; API-key management, cross-platform daemon.</li>
-          <li>Cloud pool (AWS / GCP / Azure) and Wake-on-LAN support.</li>
+          <li>Priority queue, resource-aware allocation (CPU/RAM/GPU/disk).</li>
+          <li>Live job streaming via SSE. Role-based user &amp; API-key management.</li>
+          <li>Cloud pool (AWS/GCP/Azure) and Wake-on-LAN support.</li>
         </ul>
         <div class="feat-card-tags">
           <span class="tag">C</span>
-          <span class="tag violet">REST API</span>
-          <span class="tag green">Distributed</span>
+          <span class="tag">REST API</span>
+          <span class="tag">Distributed</span>
         </div>
       </div>
 
       <div class="feat-card">
         <div class="feat-card-header">
-          <div class="feat-card-icon">🔬</div>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">View ↗</a>
+          <h3>ShardSim</h3>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">view ↗</a>
         </div>
-        <h3>ShardSim</h3>
-        <p class="summary">Distributed multi-fidelity simulation framework (DomainSim) with domain-specific learning and adaptive refinement.</p>
+        <p class="summary">Distributed multi-fidelity simulation framework with domain-specific learning and adaptive refinement.</p>
         <ul class="bullets">
           <li>Central decision core, multi-layer simulation, adaptive refinement.</li>
-          <li>Feedback loop for surrogate ML models and domain-specific learning.</li>
-          <li>Coarse-to-fine simulation pipeline with distributed orchestration.</li>
-          <li>Concrete experiments included (e.g. 2D heat diffusion).</li>
+          <li>Surrogate ML feedback loop and domain-specific learning.</li>
+          <li>Coarse-to-fine pipeline, distributed orchestration.</li>
         </ul>
         <div class="feat-card-tags">
           <span class="tag">Simulation</span>
-          <span class="tag violet">ML</span>
-          <span class="tag green">Distributed</span>
+          <span class="tag">ML</span>
+          <span class="tag">Distributed</span>
         </div>
       </div>
 
     </div>
   </section>
 
-  <div class="divider"></div>
+  <hr class="divider" />
 
-  <!-- ── All repos ─────────────────────────────────────────────── -->
+  <!-- ALL REPOS -->
   <section id="all-repos">
-    <div class="section-label">// open source</div>
-    <h2 class="section-title">All Repositories</h2>
-    <p class="section-sub">Every public project, sorted by most recently updated.</p>
-
+    <div class="section-header">
+      <p class="section-cmd">curl -s api.github.com/users/bhlyto/repos | jq .</p>
+      <h2 class="section-title">ALL REPOS</h2>
+      <p class="section-sub">Every public repo, sorted by last updated.</p>
+    </div>
     <div id="loading">
       <div class="spinner"></div>
-      Fetching repositories…
+      fetching repos...
     </div>
     <div id="repos-grid"></div>
   </section>
 
-  <!-- ── Footer ───────────────────────────────────────────────── -->
+  <!-- FOOTER -->
   <footer>
-    Built with ♥ by <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">Bhlyto</a> · HPC Engineer · Powered by the GitHub API
+    bhlyto@cave ~ :: <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github.com/Bhlyto</a> :: HPC Engineer :: powered by GitHub API
   </footer>
 
   <script>
