@@ -3,560 +3,714 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>bhlyto@dev:~ $ ls projects/</title>
+  <title>Bhlyto — Projects</title>
   <style>
     /* ── Reset ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #0a0a0a;
-      --bg2:      #000000;
-      --green:    #33ff33;
-      --green-hi: #66ff66;
-      --green-lo: #1a5c1a;
-      --cyan:     #33ffff;
-      --yellow:   #ffff33;
-      --white:    #cccccc;
-      --muted:    #4d7a4d;
+      --desktop:     #008080;
+      --face:        #d4d0c8;
+      --face-hi:     #ffffff;
+      --face-mid:    #c0c0c0;
+      --face-dark:   #808080;
+      --face-darker: #404040;
+      --titlebar:    linear-gradient(to right, #000080 0%, #1684d0 100%);
+      --title-text:  #ffffff;
+      --text:        #000000;
+      --link:        #0000cc;
+      --link-active: #cc0000;
+      --selection:   #316ac5;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: auto; }
 
     body {
-      font-family: 'Courier New', Courier, monospace;
-      background: var(--bg);
-      color: var(--green);
+      font-family: Tahoma, Arial, sans-serif;
+      background-color: var(--desktop);
+      color: var(--text);
       min-height: 100vh;
-      overflow-x: hidden;
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 16px;
+      line-height: 1.5;
+      padding: 6px 6px 10px;
     }
 
-    /* CRT scanlines */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,.12) 2px,
-        rgba(0,0,0,.12) 4px
-      );
-      pointer-events: none;
-      z-index: 9999;
+    /* ── Window chrome ──────────────────────────────────────────── */
+    .win {
+      background: var(--face);
+      border: 2px solid;
+      border-color: var(--face-hi) var(--face-darker) var(--face-darker) var(--face-hi);
+      box-shadow: 2px 2px 0 var(--face-darker);
+      max-width: 920px;
+      margin: 0 auto 10px;
     }
 
-    /* ── Blinking cursor ───────────────────────────────────────── */
-    @keyframes blink {
-      0%, 49% { opacity: 1; }
-      50%, 100% { opacity: 0; }
-    }
-    .cursor {
-      display: inline-block;
-      width: .55em;
-      height: 1em;
-      background: var(--green);
-      vertical-align: text-bottom;
-      animation: blink 1s step-end infinite;
-    }
-
-    .cursor-delayed { animation-delay: .6s; }
-    .prompt-out-cyan { color: var(--cyan); }
-
-    /* ── Nav ───────────────────────────────────────────────────── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--green-lo);
-      padding: .4rem 1.5rem;
+    .win-titlebar {
+      background: var(--titlebar);
+      color: var(--title-text);
+      padding: 3px 4px 3px 8px;
       display: flex;
       align-items: center;
-      gap: 0;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .win-title-text {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .win-controls {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .win-btn {
+      width: 16px;
+      height: 14px;
+      background: var(--face);
+      color: var(--text);
+      border: 1px solid;
+      border-color: var(--face-hi) var(--face-dark) var(--face-dark) var(--face-hi);
+      font-size: 9px;
+      line-height: 1;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Tahoma, Arial, sans-serif;
+      flex-shrink: 0;
+    }
+
+    .win-btn:active {
+      border-color: var(--face-dark) var(--face-hi) var(--face-hi) var(--face-dark);
+    }
+
+    .win-body { padding: 10px 12px; }
+
+    /* ── Status bar ─────────────────────────────────────────────── */
+    .statusbar {
+      background: var(--face);
+      border-top: 1px solid var(--face-dark);
+      padding: 2px 4px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .sb-panel {
+      border: 1px solid;
+      border-color: var(--face-dark) var(--face-hi) var(--face-hi) var(--face-dark);
+      padding: 1px 6px;
+      font-size: 12px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .sb-panel-fixed { flex: none; }
+
+    /* ── Taskbar ────────────────────────────────────────────────── */
+    nav {
+      max-width: 920px;
+      margin: 0 auto 8px;
+      background: var(--face);
+      border: 2px solid;
+      border-color: var(--face-hi) var(--face-dark) var(--face-dark) var(--face-hi);
+      padding: 4px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
-    nav .logo {
-      color: var(--green-hi);
-      font-size: .9rem;
-      margin-right: 1.5rem;
+    .start-btn {
+      background: var(--face);
+      border: 2px solid;
+      border-color: var(--face-hi) var(--face-dark) var(--face-dark) var(--face-hi);
+      padding: 2px 8px;
+      font-size: 14px;
+      font-weight: bold;
+      font-family: Tahoma, Arial, sans-serif;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .start-btn:active {
+      border-color: var(--face-dark) var(--face-hi) var(--face-hi) var(--face-dark);
+    }
+
+    .nav-sep {
+      width: 0;
+      height: 22px;
+      border-left: 1px solid var(--face-dark);
+      border-right: 1px solid var(--face-hi);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 2px 8px;
+      font-size: 14px;
+      color: var(--text);
+      text-decoration: none;
       white-space: nowrap;
     }
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 0;
+    .nav-links a:hover {
+      background: var(--selection);
+      color: #fff;
     }
 
-    nav ul li + li::before {
-      content: ' | ';
-      color: var(--green-lo);
+    .nav-clock {
+      background: var(--face);
+      border: 1px solid;
+      border-color: var(--face-dark) var(--face-hi) var(--face-hi) var(--face-dark);
+      padding: 2px 10px;
+      font-size: 13px;
+      white-space: nowrap;
     }
 
-    nav ul a {
-      color: var(--muted);
+    /* ── Classic Win98 button ───────────────────────────────────── */
+    .win98-btn {
+      background: var(--face);
+      border: 2px solid;
+      border-color: var(--face-hi) var(--face-dark) var(--face-dark) var(--face-hi);
+      padding: 4px 16px;
+      font-size: 14px;
+      font-family: Tahoma, Arial, sans-serif;
+      color: var(--text);
       text-decoration: none;
-      font-size: .85rem;
-      padding: 0 .5rem;
+      display: inline-block;
+      cursor: default;
+      min-width: 88px;
+      text-align: center;
     }
 
-    nav ul a:hover {
-      color: var(--green-hi);
-      text-decoration: underline;
+    .win98-btn:hover { background: #e4e0d8; }
+
+    .win98-btn:active {
+      border-color: var(--face-dark) var(--face-hi) var(--face-hi) var(--face-dark);
     }
 
-    /* ── Hero ──────────────────────────────────────────────────── */
-    #hero {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 2.5rem;
-    }
-
-    .term-block {
-      border: 1px solid var(--green-lo);
-      background: var(--bg2);
-      padding: 1.2rem 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .term-block .bar {
-      border-bottom: 1px solid var(--green-lo);
-      margin: -.2rem -1.5rem .8rem;
-      padding: .2rem .8rem;
-      font-size: .75rem;
-      color: var(--muted);
-    }
-
-    .prompt {
+    /* ── Hero layout ────────────────────────────────────────────── */
+    .hero-layout {
       display: flex;
-      gap: .5rem;
-      margin-bottom: .2rem;
-    }
-
-    .prompt .ps1    { color: var(--cyan); white-space: nowrap; user-select: none; }
-    .prompt .cmd    { color: var(--white); }
-    .prompt-out     { padding-left: 0; margin-bottom: .8rem; color: var(--green); }
-
-    .hero-name {
-      font-size: 2.2rem;
-      font-weight: bold;
-      color: var(--green-hi);
-      letter-spacing: .12em;
-      text-shadow: 0 0 10px var(--green-lo);
-      line-height: 1.15;
-    }
-
-    .hero-desc {
-      color: var(--muted);
-      font-size: .85rem;
-      margin-top: .4rem;
-    }
-
-    .hero-links {
-      display: flex;
-      gap: .8rem;
-      margin-top: 1.2rem;
+      gap: 16px;
+      align-items: flex-start;
       flex-wrap: wrap;
     }
 
-    .btn-retro {
-      color: var(--bg2);
-      background: var(--green);
-      text-decoration: none;
-      padding: .25rem .9rem;
-      font-family: inherit;
-      font-size: .82rem;
-      display: inline-block;
-      border: 1px solid var(--green);
+    .hero-graphic {
+      flex-shrink: 0;
+      text-align: center;
     }
 
-    .btn-retro:hover { background: var(--green-hi); border-color: var(--green-hi); }
+    .hero-graphic-icon  { font-size: 64px; line-height: 1; }
+    .hero-graphic-label { font-size: 12px; color: #444; margin-top: 4px; }
 
-    .btn-outline {
-      color: var(--green);
-      background: transparent;
-      text-decoration: none;
-      padding: .25rem .9rem;
-      font-family: inherit;
-      font-size: .82rem;
-      display: inline-block;
-      border: 1px solid var(--green-lo);
+    .hero-info { flex: 1; min-width: 200px; }
+
+    .win98-banner {
+      background: #000080;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 13px;
+      margin-bottom: 10px;
+      line-height: 1.5;
     }
 
-    .btn-outline:hover { border-color: var(--green); color: var(--green-hi); }
-
-    /* ── Divider ───────────────────────────────────────────────── */
-    .divider {
-      max-width: 860px;
-      margin: 0 auto;
-      border: none;
-      border-top: 1px solid var(--green-lo);
+    .prop-table {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 3px 10px;
+      font-size: 15px;
+      margin-bottom: 12px;
     }
 
-    /* ── Sections ──────────────────────────────────────────────── */
-    section {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem;
+    .prop-label { color: #444; white-space: nowrap; }
+    .prop-value { color: var(--text); }
+
+    .prop-sep {
+      grid-column: 1 / -1;
+      height: 1px;
+      background: var(--face-dark);
+      margin: 4px 0;
     }
 
-    .sec-cmd {
-      color: var(--muted);
-      font-size: .82rem;
-      margin-bottom: 1.2rem;
+    .hero-btns {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .sec-cmd .ps1 { color: var(--cyan); }
-    .sec-cmd .cmd { color: var(--white); }
+    /* ── Section heading ────────────────────────────────────────── */
+    .sec-heading {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-    /* ── Featured cards ────────────────────────────────────────── */
+    .sec-heading-line {
+      flex: 1;
+      height: 1px;
+      background: var(--face-dark);
+    }
+
+    /* ── Featured cards ─────────────────────────────────────────── */
     .featured-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: .9rem;
+      grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+      gap: 8px;
     }
 
     .feat-card {
-      border: 1px solid var(--green-lo);
-      background: var(--bg2);
-      padding: .9rem 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: .6rem;
+      background: var(--face);
+      border: 2px solid;
+      border-color: var(--face-dark) var(--face-hi) var(--face-hi) var(--face-dark);
       opacity: 0;
-      transform: translateY(10px);
-      transition: opacity .4s ease, transform .4s ease, border-color .2s ease;
+      transition: opacity .3s ease;
     }
 
-    .feat-card.visible { opacity: 1; transform: none; }
-    .feat-card:hover   { border-color: var(--green); }
+    .feat-card.visible { opacity: 1; }
+
+    .feat-card:hover {
+      border-color: var(--face-hi) var(--face-dark) var(--face-dark) var(--face-hi);
+    }
+
+    .feat-card-titlebar {
+      background: linear-gradient(to right, #808080 0%, #a8a8a8 100%);
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .feat-card:hover .feat-card-titlebar {
+      background: var(--titlebar);
+    }
+
+    .feat-card-body { padding: 8px 10px; }
 
     .feat-card-header {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: .5rem;
+      gap: 6px;
+      margin-bottom: 4px;
     }
 
     .feat-card h3 {
-      color: var(--green-hi);
-      font-size: .95rem;
-      letter-spacing: .04em;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text);
     }
 
-    .feat-card h3::before { content: '> '; color: var(--muted); }
-
     .feat-card-link {
-      color: var(--cyan);
-      text-decoration: none;
-      font-size: .75rem;
+      color: var(--link);
+      text-decoration: underline;
+      font-size: 13px;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
-    .feat-card-link:hover { text-decoration: underline; }
+    .feat-card-link:hover { color: var(--link-active); }
 
     .feat-card .summary {
-      color: var(--white);
-      font-size: .8rem;
-      line-height: 1.6;
+      font-size: 14px;
+      color: #222;
+      line-height: 1.5;
+      margin-bottom: 6px;
     }
 
-    .feat-card .bullets {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: .25rem;
-      flex: 1;
-    }
+    .feat-card .bullets { list-style: none; margin-bottom: 6px; }
 
     .feat-card .bullets li {
-      color: var(--muted);
-      font-size: .76rem;
+      font-size: 13px;
+      color: #444;
       line-height: 1.5;
-      padding-left: .85rem;
+      padding-left: 14px;
       position: relative;
     }
 
     .feat-card .bullets li::before {
-      content: '-';
+      content: '•';
       position: absolute;
-      left: 0;
-      color: var(--green-lo);
+      left: 3px;
+      color: #000080;
     }
 
     .feat-card-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: .3rem;
-      margin-top: auto;
+      gap: 4px;
+      margin-top: 6px;
     }
 
     .tag {
-      font-size: .7rem;
-      padding: .05rem .4rem;
-      background: transparent;
-      border: 1px solid var(--green-lo);
-      color: var(--muted);
+      font-size: 12px;
+      padding: 1px 6px;
+      background: var(--face);
+      border: 1px solid;
+      border-color: var(--face-dark) var(--face-hi) var(--face-hi) var(--face-dark);
+      color: #000080;
     }
 
-    /* ── Repo grid ─────────────────────────────────────────────── */
+    /* ── Repo cards (Explorer list) ─────────────────────────────── */
     #repos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: .65rem;
+      gap: 4px;
     }
 
     .repo-card {
-      border: 1px solid var(--green-lo);
-      background: var(--bg2);
-      padding: .7rem .9rem;
+      background: #ffffff;
+      border: 1px solid var(--face-dark);
+      padding: 6px 8px;
       display: flex;
       flex-direction: column;
-      gap: .35rem;
+      gap: 3px;
       text-decoration: none;
       opacity: 0;
-      transform: translateY(8px);
-      transition: opacity .4s ease, transform .4s ease, border-color .2s ease;
+      transition: opacity .3s ease;
     }
 
-    .repo-card.visible { opacity: 1; transform: none; }
-    .repo-card:hover   { border-color: var(--green); }
+    .repo-card.visible { opacity: 1; }
+
+    .repo-card:hover {
+      background: #dde9ff;
+      border-color: var(--selection);
+    }
 
     .repo-card-name {
-      color: var(--cyan);
-      font-size: .85rem;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--link);
       word-break: break-word;
     }
 
-    .repo-card-name::before { content: '$ '; color: var(--muted); }
+    .repo-card:hover .repo-card-name {
+      text-decoration: underline;
+      color: var(--link-active);
+    }
 
     .repo-card-desc {
-      color: var(--muted);
-      font-size: .76rem;
-      line-height: 1.5;
+      font-size: 13px;
+      color: #444;
+      line-height: 1.4;
       flex: 1;
     }
 
     .repo-card-meta {
       display: flex;
       align-items: center;
-      gap: .7rem;
-      margin-top: .15rem;
+      gap: 8px;
+      font-size: 12px;
+      color: #666;
     }
 
     .repo-lang {
       display: flex;
       align-items: center;
-      gap: .3rem;
-      font-size: .72rem;
-      color: var(--muted);
+      gap: 3px;
+      font-size: 12px;
+      color: #444;
     }
 
     .lang-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
+      border: 1px solid rgba(0,0,0,.3);
       flex-shrink: 0;
     }
 
     .repo-stars, .repo-forks {
       display: flex;
       align-items: center;
-      gap: .2rem;
-      font-size: .72rem;
-      color: var(--muted);
+      gap: 2px;
+      color: #444;
     }
 
-    /* ── Loading ───────────────────────────────────────────────── */
+    /* ── Loading ────────────────────────────────────────────────── */
     #loading {
-      color: var(--muted);
-      font-size: .85rem;
-      padding: 1.5rem 0;
+      font-size: 15px;
+      color: #444;
+      padding: 10px 0;
       display: flex;
       align-items: center;
-      gap: .4rem;
+      gap: 8px;
     }
 
-    /* ── Footer ────────────────────────────────────────────────── */
+    @keyframes hourglass-spin {
+      0%, 45%  { transform: none; }
+      50%, 95% { transform: rotate(180deg); }
+      100%     { transform: none; }
+    }
+
+    .hourglass {
+      display: inline-block;
+      animation: hourglass-spin 1.8s step-end infinite;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
     footer {
-      border-top: 1px solid var(--green-lo);
-      padding: 1.2rem 1.5rem;
+      max-width: 920px;
+      margin: 4px auto 0;
+      background: var(--face);
+      border: 2px solid;
+      border-color: var(--face-hi) var(--face-darker) var(--face-darker) var(--face-hi);
+      padding: 5px 12px;
+      font-size: 13px;
+      color: #444;
       text-align: center;
-      color: var(--muted);
-      font-size: .78rem;
-      max-width: 860px;
-      margin: 0 auto;
     }
 
-    footer a { color: var(--green); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer a { color: var(--link); }
+    footer a:hover { color: var(--link-active); }
 
-    /* ── Lang colour map ───────────────────────────────────────── */
-    .lang-C         { background: #555599; }
-    .lang-Python    { background: #3572A5; }
-    .lang-JavaScript{ background: #f1e05a; }
-    .lang-TypeScript{ background: #2b7489; }
-    .lang-Rust      { background: #dea584; }
-    .lang-Go        { background: #00ADD8; }
-    .lang-HTML      { background: #e34c26; }
-    .lang-CSS       { background: #563d7c; }
-    .lang-Shell     { background: #89e051; }
-    .lang-default   { background: #4d7a4d; }
+    /* ── Lang colour map ────────────────────────────────────────── */
+    .lang-C          { background: #555599; }
+    .lang-Python     { background: #3572A5; }
+    .lang-JavaScript { background: #f1e05a; }
+    .lang-TypeScript { background: #2b7489; }
+    .lang-Rust       { background: #dea584; }
+    .lang-Go         { background: #00ADD8; }
+    .lang-HTML       { background: #e34c26; }
+    .lang-CSS        { background: #563d7c; }
+    .lang-Shell      { background: #89e051; }
+    .lang-default    { background: #808080; }
 
-    /* ── Responsive ────────────────────────────────────────────── */
+    /* ── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 600px) {
-      nav ul { display: none; }
+      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── Nav ─────────────────────────────────────────────────── -->
+  <!-- ── Taskbar ──────────────────────────────────────────────── -->
   <nav>
-    <span class="logo">[bhlyto@dev ~]#</span>
-    <ul>
-      <li><a href="#featured">projects</a></li>
-      <li><a href="#all-repos">repos</a></li>
-      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github</a></li>
+    <button class="start-btn">🪟 Start</button>
+    <div class="nav-sep"></div>
+    <ul class="nav-links">
+      <li><a href="#featured">📁 Projects</a></li>
+      <li><a href="#all-repos">🖥️ Repos</a></li>
+      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">🐱 GitHub</a></li>
     </ul>
+    <div class="nav-clock" id="nav-clock">--:--</div>
   </nav>
 
-  <!-- ── Hero ────────────────────────────────────────────────── -->
-  <section id="hero">
-    <div class="term-block">
-      <div class="bar">terminal — 80x24</div>
-
-      <div class="prompt">
-        <span class="ps1">bhlyto@dev:~$</span>
-        <span class="cmd">whoami</span>
-      </div>
-      <div class="prompt-out">
-        <div class="hero-name">BHLYTO<span class="cursor"></span></div>
-        <div class="hero-desc">
-          # systems programmer &amp; spare-time tinkerer<br>
-          # perl / C / sh / fortran / numerical simulations<br>
-          # cave dweller. dark room. command line for breakfast.
-        </div>
-      </div>
-
-      <div class="prompt">
-        <span class="ps1">bhlyto@dev:~$</span>
-        <span class="cmd">ls projects/</span>
-      </div>
-      <div class="prompt-out prompt-out-cyan">
-        SPAS-/&nbsp;&nbsp;&nbsp;BHC_SCHEDULER/&nbsp;&nbsp;&nbsp;ShardSim/
-      </div>
-
-      <div class="prompt">
-        <span class="ps1">bhlyto@dev:~$</span>
-        <span class="cmd"><span class="cursor cursor-delayed"></span></span>
-      </div>
-
-      <div class="hero-links">
-        <a class="btn-retro"  href="#featured">[ view projects ]</a>
-        <a class="btn-outline" href="https://github.com/Bhlyto" target="_blank" rel="noopener">[ github ]</a>
+  <!-- ── Hero / System Properties ────────────────────────────── -->
+  <div class="win" id="hero">
+    <div class="win-titlebar">
+      <span class="win-title-text">
+        <span>💻</span> Bhlyto — System Properties
+      </span>
+      <div class="win-controls">
+        <button class="win-btn">_</button>
+        <button class="win-btn">□</button>
+        <button class="win-btn">✕</button>
       </div>
     </div>
-  </section>
-
-  <hr class="divider">
+    <div class="win-body">
+      <div class="hero-layout">
+        <div class="hero-graphic">
+          <div class="hero-graphic-icon">🖥️</div>
+          <div class="hero-graphic-label">Bhlyto</div>
+        </div>
+        <div class="hero-info">
+          <div class="win98-banner">
+            <strong>Microsoft Windows 98</strong><br>
+            4.10.1998 · Copyright © 1981-1998 Microsoft Corp.
+          </div>
+          <div class="prop-table">
+            <span class="prop-label">User:</span>
+            <span class="prop-value"><strong>Bhlyto</strong></span>
+            <span class="prop-label">Role:</span>
+            <span class="prop-value">Systems programmer &amp; spare-time tinkerer</span>
+            <div class="prop-sep"></div>
+            <span class="prop-label">Languages:</span>
+            <span class="prop-value">C · Perl · Shell · Fortran · Python</span>
+            <span class="prop-label">Habitat:</span>
+            <span class="prop-value">Dark cave. Command line for breakfast.</span>
+            <span class="prop-label">Site:</span>
+            <span class="prop-value">Personal projects built on spare time.</span>
+          </div>
+          <div class="hero-btns">
+            <a class="win98-btn" href="#featured">📂 Projects</a>
+            <a class="win98-btn" href="https://github.com/Bhlyto" target="_blank" rel="noopener">🐱 GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="statusbar">
+      <div class="sb-panel">Ready</div>
+      <div class="sb-panel sb-panel-fixed">github.com/Bhlyto</div>
+    </div>
+  </div>
 
   <!-- ── Featured projects ────────────────────────────────────── -->
-  <section id="featured">
-    <div class="sec-cmd">
-      <span class="ps1">bhlyto@dev:~$</span>
-      <span class="cmd"> cat projects/featured.txt</span>
+  <div class="win" id="featured">
+    <div class="win-titlebar">
+      <span class="win-title-text">
+        <span>📁</span> Featured Projects
+      </span>
+      <div class="win-controls">
+        <button class="win-btn">_</button>
+        <button class="win-btn">□</button>
+        <button class="win-btn">✕</button>
+      </div>
     </div>
-
-    <div class="featured-grid">
-
-      <div class="feat-card">
-        <div class="feat-card-header">
-          <h3>SPAS-</h3>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">[view →]</a>
-        </div>
-        <p class="summary">Small Programming Agents System — a local multi-agent workflow runner (Ollama + Python) with a desktop GUI and per-run workspace artifacts.</p>
-        <ul class="bullets">
-          <li>Designed for both casual and expert users.</li>
-          <li>Integrates Python &amp; Ollama (local LLM) for code generation, compilation, and execution.</li>
-          <li>Provides diagnostics, manages dependencies, and supports agent configuration.</li>
-          <li>Feature-rich GUI: workflow history, package management, environment setup.</li>
-        </ul>
-        <div class="feat-card-tags">
-          <span class="tag">Python</span>
-          <span class="tag">Ollama</span>
-          <span class="tag">LLM Agents</span>
-        </div>
+    <div class="win-body">
+      <div class="sec-heading">
+        📌 Highlighted Projects
+        <span class="sec-heading-line"></span>
       </div>
+      <div class="featured-grid">
 
-      <div class="feat-card">
-        <div class="feat-card-header">
-          <h3>BHC_SCHEDULER</h3>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">[view →]</a>
+        <div class="feat-card">
+          <div class="feat-card-titlebar">🤖 SPAS-</div>
+          <div class="feat-card-body">
+            <div class="feat-card-header">
+              <h3>SPAS-</h3>
+              <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">Open ↗</a>
+            </div>
+            <p class="summary">Small Programming Agents System — a local multi-agent workflow runner (Ollama + Python) with a desktop GUI and per-run workspace artifacts.</p>
+            <ul class="bullets">
+              <li>Designed for both casual and expert users.</li>
+              <li>Integrates Python &amp; Ollama (local LLM) for code generation, compilation, and execution.</li>
+              <li>Provides diagnostics, manages dependencies, and supports agent configuration.</li>
+              <li>Feature-rich GUI: workflow history, package management, environment setup.</li>
+            </ul>
+            <div class="feat-card-tags">
+              <span class="tag">Python</span>
+              <span class="tag">Ollama</span>
+              <span class="tag">LLM Agents</span>
+            </div>
+          </div>
         </div>
-        <p class="summary">Lightweight job orchestration daemon in C with REST API and optional web dashboard for submitting, tracking, and managing cluster-wide jobs.</p>
-        <ul class="bullets">
-          <li>Priority queue, resource-aware allocation (CPU / RAM / GPU / disk).</li>
-          <li>Live job streaming via Server-Sent Events (SSE).</li>
-          <li>Role-based user &amp; API-key management, cross-platform daemon.</li>
-          <li>Cloud pool (AWS / GCP / Azure) and Wake-on-LAN support.</li>
-        </ul>
-        <div class="feat-card-tags">
-          <span class="tag">C</span>
-          <span class="tag">REST API</span>
-          <span class="tag">Distributed</span>
+
+        <div class="feat-card">
+          <div class="feat-card-titlebar">⚙️ BHC_SCHEDULER</div>
+          <div class="feat-card-body">
+            <div class="feat-card-header">
+              <h3>BHC_SCHEDULER</h3>
+              <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">Open ↗</a>
+            </div>
+            <p class="summary">Lightweight job orchestration daemon in C with REST API and optional web dashboard for submitting, tracking, and managing cluster-wide jobs.</p>
+            <ul class="bullets">
+              <li>Priority queue, resource-aware allocation (CPU / RAM / GPU / disk).</li>
+              <li>Live job streaming via Server-Sent Events (SSE).</li>
+              <li>Role-based user &amp; API-key management, cross-platform daemon.</li>
+              <li>Cloud pool (AWS / GCP / Azure) and Wake-on-LAN support.</li>
+            </ul>
+            <div class="feat-card-tags">
+              <span class="tag">C</span>
+              <span class="tag">REST API</span>
+              <span class="tag">Distributed</span>
+            </div>
+          </div>
         </div>
+
+        <div class="feat-card">
+          <div class="feat-card-titlebar">🔬 ShardSim</div>
+          <div class="feat-card-body">
+            <div class="feat-card-header">
+              <h3>ShardSim</h3>
+              <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">Open ↗</a>
+            </div>
+            <p class="summary">Distributed multi-fidelity simulation framework (DomainSim) with domain-specific learning and adaptive refinement.</p>
+            <ul class="bullets">
+              <li>Central decision core, multi-layer simulation, adaptive refinement.</li>
+              <li>Feedback loop for surrogate ML models and domain-specific learning.</li>
+              <li>Coarse-to-fine simulation pipeline with distributed orchestration.</li>
+              <li>Concrete experiments included (e.g. 2D heat diffusion).</li>
+            </ul>
+            <div class="feat-card-tags">
+              <span class="tag">Simulation</span>
+              <span class="tag">ML</span>
+              <span class="tag">Distributed</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-
-      <div class="feat-card">
-        <div class="feat-card-header">
-          <h3>ShardSim</h3>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">[view →]</a>
-        </div>
-        <p class="summary">Distributed multi-fidelity simulation framework (DomainSim) with domain-specific learning and adaptive refinement.</p>
-        <ul class="bullets">
-          <li>Central decision core, multi-layer simulation, adaptive refinement.</li>
-          <li>Feedback loop for surrogate ML models and domain-specific learning.</li>
-          <li>Coarse-to-fine simulation pipeline with distributed orchestration.</li>
-          <li>Concrete experiments included (e.g. 2D heat diffusion).</li>
-        </ul>
-        <div class="feat-card-tags">
-          <span class="tag">Simulation</span>
-          <span class="tag">ML</span>
-          <span class="tag">Distributed</span>
-        </div>
-      </div>
-
     </div>
-  </section>
-
-  <hr class="divider">
+    <div class="statusbar">
+      <div class="sb-panel">3 object(s)</div>
+    </div>
+  </div>
 
   <!-- ── All repos ─────────────────────────────────────────────── -->
-  <section id="all-repos">
-    <div class="sec-cmd">
-      <span class="ps1">bhlyto@dev:~$</span>
-      <span class="cmd"> gh repo list Bhlyto --public --sort updated</span>
+  <div class="win" id="all-repos">
+    <div class="win-titlebar">
+      <span class="win-title-text">
+        <span>🖥️</span> All Repositories — Windows Explorer
+      </span>
+      <div class="win-controls">
+        <button class="win-btn">_</button>
+        <button class="win-btn">□</button>
+        <button class="win-btn">✕</button>
+      </div>
     </div>
-
-    <div id="loading">
-      <span>fetching</span><span class="cursor"></span>
+    <div class="win-body">
+      <div class="sec-heading">
+        📂 Public Repositories
+        <span class="sec-heading-line"></span>
+      </div>
+      <div id="loading">
+        <span class="hourglass">⏳</span> Fetching repositories…
+      </div>
+      <div id="repos-grid"></div>
     </div>
-    <div id="repos-grid"></div>
-  </section>
+    <div class="statusbar">
+      <div class="sb-panel" id="repo-count">Loading…</div>
+    </div>
+  </div>
 
   <!-- ── Footer ───────────────────────────────────────────────── -->
   <footer>
-    bhlyto@github.io :: <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github.com/Bhlyto</a> :: powered by GitHub API
+    <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github.com/Bhlyto</a>
+    &nbsp;·&nbsp; Powered by the GitHub API
   </footer>
 
   <script>
-    /* ── Language colour map ──────────────────────────────────── */
+    /* ── Clock ──────────────────────────────────────────────────── */
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('nav-clock').textContent =
+        now.getHours().toString().padStart(2, '0') + ':' +
+        now.getMinutes().toString().padStart(2, '0');
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+
+    /* ── Language colour map ────────────────────────────────────── */
     const LANG_COLORS = {
       'C': '#555599', 'C++': '#f34b7d', 'Python': '#3572A5',
       'JavaScript': '#f1e05a', 'TypeScript': '#2b7489',
@@ -566,7 +720,7 @@
       'PHP': '#4F5D95', 'Lua': '#000080', 'Haskell': '#5e5086'
     };
 
-    /* ── Intersection-observer fade-in ───────────────────────── */
+    /* ── Intersection-observer fade-in ─────────────────────────── */
     function onIntersect(entries) {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -582,19 +736,18 @@
       observer.observe(el);
     });
 
-    /* ── Staggered repo card animation helper ─────────────────── */
+    /* ── Staggered repo card animation helper ───────────────────── */
     function observeCard(card, delay) {
       // delay = stagger of 40 ms per card, capped at 500 ms total
       card.style.transition = [
         `opacity .45s ${delay}s ease`,
-        `transform .45s ${delay}s ease`,
-        'border-color .25s ease',
-        'background .25s ease'
+        'border-color .2s ease',
+        'background .2s ease'
       ].join(', ');
       observer.observe(card);
     }
 
-    /* ── Fetch & render repos ─────────────────────────────────── */
+    /* ── Fetch & render repos ───────────────────────────────────── */
     const FEATURED_NAMES = new Set(['SPAS-', 'BHC_SCHEDULER', 'ShardSim']);
     const USERNAME = 'Bhlyto';
 
@@ -623,7 +776,7 @@
         langEl.className = 'repo-lang';
         const dot = document.createElement('span');
         dot.className = 'lang-dot';
-        dot.style.background = LANG_COLORS[repo.language] || '#6b7a8d';
+        dot.style.background = LANG_COLORS[repo.language] || '#808080';
         langEl.appendChild(dot);
         langEl.appendChild(document.createTextNode(repo.language));
         meta.appendChild(langEl);
@@ -648,8 +801,9 @@
     }
 
     (async () => {
-      const grid     = document.getElementById('repos-grid');
-      const loadEl   = document.getElementById('loading');
+      const grid    = document.getElementById('repos-grid');
+      const loadEl  = document.getElementById('loading');
+      const countEl = document.getElementById('repo-count');
 
       try {
         const allRepos = [];
@@ -665,22 +819,24 @@
         loadEl.style.display = 'none';
 
         if (!allRepos.length) {
-          grid.innerHTML = '<p style="color:var(--muted);text-align:center">No public repositories found.</p>';
+          grid.innerHTML = '<p style="color:#444;padding:8px">No public repositories found.</p>';
           return;
         }
 
-        allRepos
-          .filter(r => !FEATURED_NAMES.has(r.name))
-          .forEach((repo, i) => {
-            const card = buildRepoCard(repo);
-            grid.appendChild(card);
-            // stagger: 40 ms per card, capped at 500 ms
-            observeCard(card, Math.min(i * 0.04, 0.5));
-          });
+        const filtered = allRepos.filter(r => !FEATURED_NAMES.has(r.name));
+        countEl.textContent = `${filtered.length} object(s)`;
+
+        filtered.forEach((repo, i) => {
+          const card = buildRepoCard(repo);
+          grid.appendChild(card);
+          // stagger: 40 ms per card, capped at 500 ms
+          observeCard(card, Math.min(i * 0.04, 0.5));
+        });
 
       } catch (err) {
         loadEl.style.display = 'none';
-        grid.innerHTML = '<p style="color:var(--muted);text-align:center">Could not load repositories — check back later.</p>';
+        grid.innerHTML = '<p style="color:#444;padding:8px">Could not load repositories — check back later.</p>';
+        countEl.textContent = 'Error';
         console.error(err);
       }
     })();
