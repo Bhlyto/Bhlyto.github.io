@@ -708,9 +708,12 @@
         now.getMinutes().toString().padStart(2, '0');
     }
     updateClock();
-    setInterval(updateClock, 10000);
+    // sync to the next minute boundary, then tick every 60 s
+    setTimeout(() => { updateClock(); setInterval(updateClock, 60000); },
+      (60 - new Date().getSeconds()) * 1000);
 
     /* ── Language colour map ────────────────────────────────────── */
+    const LANG_COLOR_FALLBACK = '#808080';
     const LANG_COLORS = {
       'C': '#555599', 'C++': '#f34b7d', 'Python': '#3572A5',
       'JavaScript': '#f1e05a', 'TypeScript': '#2b7489',
@@ -776,7 +779,7 @@
         langEl.className = 'repo-lang';
         const dot = document.createElement('span');
         dot.className = 'lang-dot';
-        dot.style.background = LANG_COLORS[repo.language] || '#808080';
+        dot.style.background = LANG_COLORS[repo.language] || LANG_COLOR_FALLBACK;
         langEl.appendChild(dot);
         langEl.appendChild(document.createTextNode(repo.language));
         meta.appendChild(langEl);
