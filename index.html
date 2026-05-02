@@ -62,6 +62,9 @@
       animation: blink 1s step-end infinite;
     }
 
+    .cursor-delayed { animation-delay: .6s; }
+    .prompt-out-cyan { color: var(--cyan); }
+
     /* ── Nav ───────────────────────────────────────────────────── */
     nav {
       position: sticky;
@@ -445,13 +448,13 @@
         <span class="ps1">bhlyto@dev:~$</span>
         <span class="cmd">ls projects/</span>
       </div>
-      <div class="prompt-out" style="color:var(--cyan)">
+      <div class="prompt-out prompt-out-cyan">
         SPAS-/&nbsp;&nbsp;&nbsp;BHC_SCHEDULER/&nbsp;&nbsp;&nbsp;ShardSim/
       </div>
 
       <div class="prompt">
         <span class="ps1">bhlyto@dev:~$</span>
-        <span class="cmd"><span class="cursor" style="animation-delay:.6s"></span></span>
+        <span class="cmd"><span class="cursor cursor-delayed"></span></span>
       </div>
 
       <div class="hero-links">
