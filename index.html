@@ -3,487 +3,360 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bhlyto — Developer Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <title>bhlyto@dev:~ $ ls projects/</title>
   <style>
-    /* ── Reset & tokens ───────────────────────────────────────── */
+    /* ── Reset ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #080b10;
-      --bg2:       #0e1219;
-      --bg3:       #151b25;
-      --border:    rgba(255,255,255,.07);
-      --border-hi: rgba(99,179,255,.35);
-      --text:      #dde6f0;
-      --muted:     #6b7a8d;
-      --accent1:   #63b3ff;   /* electric blue  */
-      --accent2:   #b388ff;   /* soft violet    */
-      --accent3:   #4fffb0;   /* mint green     */
-      --glow1:     rgba(99,179,255,.18);
-      --glow2:     rgba(179,136,255,.15);
-      --radius:    14px;
-      --transition: .25s cubic-bezier(.4,0,.2,1);
+      --bg:       #0a0a0a;
+      --bg2:      #000000;
+      --green:    #33ff33;
+      --green-hi: #66ff66;
+      --green-lo: #1a5c1a;
+      --cyan:     #33ffff;
+      --yellow:   #ffff33;
+      --white:    #cccccc;
+      --muted:    #4d7a4d;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Courier New', Courier, monospace;
       background: var(--bg);
-      color: var(--text);
+      color: var(--green);
       min-height: 100vh;
       overflow-x: hidden;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
-    /* ── Animated mesh background ─────────────────────────────── */
-    body::before {
+    /* CRT scanlines */
+    body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 20% -10%, rgba(99,179,255,.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 85% 110%, rgba(179,136,255,.10) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(79,255,176,.04) 0%, transparent 70%);
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.12) 2px,
+        rgba(0,0,0,.12) 4px
+      );
       pointer-events: none;
-      z-index: 0;
+      z-index: 9999;
     }
 
-    /* ── Nav ──────────────────────────────────────────────────── */
+    /* ── Blinking cursor ───────────────────────────────────────── */
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    .cursor {
+      display: inline-block;
+      width: .55em;
+      height: 1em;
+      background: var(--green);
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+
+    /* ── Nav ───────────────────────────────────────────────────── */
     nav {
-      position: fixed;
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
       z-index: 100;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--green-lo);
+      padding: .4rem 1.5rem;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: .9rem 2rem;
-      background: rgba(8,11,16,.75);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      gap: 0;
+      flex-wrap: wrap;
     }
 
     nav .logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
-      font-size: .95rem;
-      color: var(--accent1);
-      letter-spacing: .04em;
+      color: var(--green-hi);
+      font-size: .9rem;
+      margin-right: 1.5rem;
+      white-space: nowrap;
     }
-
-    nav .logo span { color: var(--accent2); }
 
     nav ul {
       list-style: none;
       display: flex;
-      gap: 1.8rem;
+      gap: 0;
+    }
+
+    nav ul li + li::before {
+      content: ' | ';
+      color: var(--green-lo);
     }
 
     nav ul a {
+      color: var(--muted);
+      text-decoration: none;
       font-size: .85rem;
-      font-weight: 500;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: .03em;
-      transition: color var(--transition);
+      padding: 0 .5rem;
     }
 
-    nav ul a:hover { color: var(--text); }
+    nav ul a:hover {
+      color: var(--green-hi);
+      text-decoration: underline;
+    }
 
-    /* ── Hero ─────────────────────────────────────────────────── */
+    /* ── Hero ──────────────────────────────────────────────────── */
     #hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 7rem 1.5rem 5rem;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .75rem;
-      color: var(--accent3);
-      background: rgba(79,255,176,.08);
-      border: 1px solid rgba(79,255,176,.2);
-      border-radius: 999px;
-      padding: .3rem .9rem;
-      margin-bottom: 1.6rem;
-      letter-spacing: .06em;
-      animation: fadeSlideDown .6s ease both;
-    }
-
-    .hero-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent3);
-      box-shadow: 0 0 8px var(--accent3);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .3; }
-    }
-
-    #hero h1 {
-      font-size: clamp(3rem, 9vw, 6.5rem);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -.03em;
-      background: linear-gradient(135deg, #fff 0%, var(--accent1) 45%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: fadeSlideDown .7s .1s ease both;
-    }
-
-    #hero .subtitle {
-      margin-top: 1.2rem;
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      font-weight: 400;
-      color: var(--muted);
-      max-width: 540px;
-      line-height: 1.7;
-      animation: fadeSlideDown .7s .2s ease both;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeSlideDown .7s .3s ease both;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .72rem 1.6rem;
-      border-radius: 999px;
-      font-size: .9rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all var(--transition);
-      letter-spacing: .02em;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      color: #fff;
-      box-shadow: 0 4px 24px rgba(99,179,255,.25);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(99,179,255,.4);
-    }
-
-    .btn-ghost {
-      border: 1px solid var(--border-hi);
-      color: var(--text);
-      background: transparent;
-    }
-
-    .btn-ghost:hover {
-      background: rgba(99,179,255,.07);
-      transform: translateY(-2px);
-    }
-
-    .scroll-hint {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .4rem;
-      font-size: .72rem;
-      color: var(--muted);
-      letter-spacing: .08em;
-      animation: fadeIn 1s 1s ease both;
-    }
-
-    .scroll-hint .arrow {
-      width: 20px;
-      height: 20px;
-      border-right: 2px solid var(--muted);
-      border-bottom: 2px solid var(--muted);
-      transform: rotate(45deg);
-      animation: bounce 1.8s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: rotate(45deg) translateY(0); }
-      50%       { transform: rotate(45deg) translateY(5px); }
-    }
-
-    /* ── Section layout ───────────────────────────────────────── */
-    section {
-      position: relative;
-      z-index: 1;
-      max-width: 1160px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 5rem 1.5rem;
+      padding: 3rem 1.5rem 2.5rem;
     }
 
-    .section-label {
-      font-family: 'JetBrains Mono', monospace;
+    .term-block {
+      border: 1px solid var(--green-lo);
+      background: var(--bg2);
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .term-block .bar {
+      border-bottom: 1px solid var(--green-lo);
+      margin: -.2rem -1.5rem .8rem;
+      padding: .2rem .8rem;
       font-size: .75rem;
-      font-weight: 500;
-      color: var(--accent1);
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      margin-bottom: .7rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 700;
-      letter-spacing: -.025em;
-      color: #fff;
-      margin-bottom: .6rem;
-    }
-
-    .section-sub {
-      font-size: .95rem;
       color: var(--muted);
-      max-width: 480px;
-      line-height: 1.7;
-      margin-bottom: 3rem;
     }
 
-    /* ── Featured project cards ───────────────────────────────── */
+    .prompt {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: .2rem;
+    }
+
+    .prompt .ps1    { color: var(--cyan); white-space: nowrap; user-select: none; }
+    .prompt .cmd    { color: var(--white); }
+    .prompt-out     { padding-left: 0; margin-bottom: .8rem; color: var(--green); }
+
+    .hero-name {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: var(--green-hi);
+      letter-spacing: .12em;
+      text-shadow: 0 0 10px var(--green-lo);
+      line-height: 1.15;
+    }
+
+    .hero-desc {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-top: .4rem;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: .8rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-retro {
+      color: var(--bg2);
+      background: var(--green);
+      text-decoration: none;
+      padding: .25rem .9rem;
+      font-family: inherit;
+      font-size: .82rem;
+      display: inline-block;
+      border: 1px solid var(--green);
+    }
+
+    .btn-retro:hover { background: var(--green-hi); border-color: var(--green-hi); }
+
+    .btn-outline {
+      color: var(--green);
+      background: transparent;
+      text-decoration: none;
+      padding: .25rem .9rem;
+      font-family: inherit;
+      font-size: .82rem;
+      display: inline-block;
+      border: 1px solid var(--green-lo);
+    }
+
+    .btn-outline:hover { border-color: var(--green); color: var(--green-hi); }
+
+    /* ── Divider ───────────────────────────────────────────────── */
+    .divider {
+      max-width: 860px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid var(--green-lo);
+    }
+
+    /* ── Sections ──────────────────────────────────────────────── */
+    section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .sec-cmd {
+      color: var(--muted);
+      font-size: .82rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .sec-cmd .ps1 { color: var(--cyan); }
+    .sec-cmd .cmd { color: var(--white); }
+
+    /* ── Featured cards ────────────────────────────────────────── */
     .featured-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: .9rem;
     }
 
     .feat-card {
-      position: relative;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem;
+      border: 1px solid var(--green-lo);
+      background: var(--bg2);
+      padding: .9rem 1rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      overflow: hidden;
-      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      gap: .6rem;
       opacity: 0;
-      transform: translateY(24px);
+      transform: translateY(10px);
+      transition: opacity .4s ease, transform .4s ease, border-color .2s ease;
     }
 
-    .feat-card.visible {
-      opacity: 1;
-      transform: none;
-      transition: opacity .5s ease, transform .5s ease, border-color var(--transition), box-shadow var(--transition);
-    }
-
-    .feat-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--glow1) 0%, var(--glow2) 100%);
-      opacity: 0;
-      transition: opacity var(--transition);
-      pointer-events: none;
-    }
-
-    .feat-card:hover {
-      border-color: var(--border-hi);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 0 1px var(--border-hi);
-    }
-
-    .feat-card:hover::before { opacity: 1; }
+    .feat-card.visible { opacity: 1; transform: none; }
+    .feat-card:hover   { border-color: var(--green); }
 
     .feat-card-header {
       display: flex;
-      align-items: flex-start;
+      align-items: baseline;
       justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .feat-card-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-
-    .feat-card-link {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-      font-size: .8rem;
-      color: var(--muted);
-      text-decoration: none;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: .25rem .75rem;
-      transition: all var(--transition);
-      flex-shrink: 0;
-    }
-
-    .feat-card-link:hover {
-      color: var(--accent1);
-      border-color: var(--border-hi);
+      gap: .5rem;
     }
 
     .feat-card h3 {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.05rem;
-      font-weight: 500;
-      color: #fff;
-      letter-spacing: -.01em;
+      color: var(--green-hi);
+      font-size: .95rem;
+      letter-spacing: .04em;
     }
 
+    .feat-card h3::before { content: '> '; color: var(--muted); }
+
+    .feat-card-link {
+      color: var(--cyan);
+      text-decoration: none;
+      font-size: .75rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .feat-card-link:hover { text-decoration: underline; }
+
     .feat-card .summary {
-      font-size: .9rem;
-      color: var(--text);
-      line-height: 1.65;
+      color: var(--white);
+      font-size: .8rem;
+      line-height: 1.6;
     }
 
     .feat-card .bullets {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: .45rem;
+      gap: .25rem;
       flex: 1;
     }
 
     .feat-card .bullets li {
-      font-size: .82rem;
       color: var(--muted);
-      line-height: 1.55;
-      padding-left: 1rem;
+      font-size: .76rem;
+      line-height: 1.5;
+      padding-left: .85rem;
       position: relative;
     }
 
     .feat-card .bullets li::before {
-      content: '▹';
+      content: '-';
       position: absolute;
       left: 0;
-      color: var(--accent1);
+      color: var(--green-lo);
     }
 
     .feat-card-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: .4rem;
+      gap: .3rem;
       margin-top: auto;
     }
 
     .tag {
-      font-family: 'JetBrains Mono', monospace;
       font-size: .7rem;
-      padding: .2rem .6rem;
-      border-radius: 999px;
-      background: rgba(99,179,255,.08);
-      border: 1px solid rgba(99,179,255,.15);
-      color: var(--accent1);
-      letter-spacing: .04em;
+      padding: .05rem .4rem;
+      background: transparent;
+      border: 1px solid var(--green-lo);
+      color: var(--muted);
     }
 
-    .tag.violet {
-      background: rgba(179,136,255,.08);
-      border-color: rgba(179,136,255,.15);
-      color: var(--accent2);
-    }
-
-    .tag.green {
-      background: rgba(79,255,176,.08);
-      border-color: rgba(79,255,176,.15);
-      color: var(--accent3);
-    }
-
-    /* ── All repos grid ───────────────────────────────────────── */
+    /* ── Repo grid ─────────────────────────────────────────────── */
     #repos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: .65rem;
     }
 
     .repo-card {
+      border: 1px solid var(--green-lo);
       background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.2rem 1.4rem;
+      padding: .7rem .9rem;
       display: flex;
       flex-direction: column;
-      gap: .55rem;
-      transition: border-color var(--transition), transform var(--transition), background var(--transition);
-      opacity: 0;
-      transform: translateY(16px);
+      gap: .35rem;
       text-decoration: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .4s ease, transform .4s ease, border-color .2s ease;
     }
 
-    .repo-card.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    .repo-card:hover {
-      border-color: var(--border-hi);
-      background: var(--bg3);
-      transform: translateY(-3px);
-    }
+    .repo-card.visible { opacity: 1; transform: none; }
+    .repo-card:hover   { border-color: var(--green); }
 
     .repo-card-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .9rem;
-      font-weight: 500;
-      color: var(--accent1);
+      color: var(--cyan);
+      font-size: .85rem;
       word-break: break-word;
     }
 
+    .repo-card-name::before { content: '$ '; color: var(--muted); }
+
     .repo-card-desc {
-      font-size: .82rem;
       color: var(--muted);
-      line-height: 1.6;
+      font-size: .76rem;
+      line-height: 1.5;
       flex: 1;
     }
 
     .repo-card-meta {
       display: flex;
       align-items: center;
-      gap: .9rem;
-      margin-top: .2rem;
+      gap: .7rem;
+      margin-top: .15rem;
     }
 
     .repo-lang {
       display: flex;
       align-items: center;
-      gap: .35rem;
-      font-size: .75rem;
+      gap: .3rem;
+      font-size: .72rem;
       color: var(--muted);
     }
 
     .lang-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       flex-shrink: 0;
     }
@@ -491,69 +364,36 @@
     .repo-stars, .repo-forks {
       display: flex;
       align-items: center;
-      gap: .28rem;
-      font-size: .75rem;
+      gap: .2rem;
+      font-size: .72rem;
       color: var(--muted);
     }
 
-    /* ── Loading skeleton ─────────────────────────────────────── */
+    /* ── Loading ───────────────────────────────────────────────── */
     #loading {
+      color: var(--muted);
+      font-size: .85rem;
+      padding: 1.5rem 0;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: .8rem;
-      padding: 3rem 0;
-      color: var(--muted);
-      font-size: .9rem;
+      gap: .4rem;
     }
 
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent1);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Footer ───────────────────────────────────────────────── */
+    /* ── Footer ────────────────────────────────────────────────── */
     footer {
-      position: relative;
-      z-index: 1;
+      border-top: 1px solid var(--green-lo);
+      padding: 1.2rem 1.5rem;
       text-align: center;
-      padding: 2.5rem 1.5rem;
-      border-top: 1px solid var(--border);
       color: var(--muted);
-      font-size: .8rem;
+      font-size: .78rem;
+      max-width: 860px;
+      margin: 0 auto;
     }
 
-    footer a {
-      color: var(--accent1);
-      text-decoration: none;
-    }
-
+    footer a { color: var(--green); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
-    /* ── Animations ───────────────────────────────────────────── */
-    @keyframes fadeSlideDown {
-      from { opacity: 0; transform: translateY(-16px); }
-      to   { opacity: 1; transform: none; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    /* ── Responsive ───────────────────────────────────────────── */
-    @media (max-width: 600px) {
-      nav ul { display: none; }
-      .hero-cta { flex-direction: column; align-items: center; }
-    }
-
-    /* ── Lang colour map ──────────────────────────────────────── */
+    /* ── Lang colour map ───────────────────────────────────────── */
     .lang-C         { background: #555599; }
     .lang-Python    { background: #3572A5; }
     .lang-JavaScript{ background: #f1e05a; }
@@ -563,14 +403,11 @@
     .lang-HTML      { background: #e34c26; }
     .lang-CSS       { background: #563d7c; }
     .lang-Shell     { background: #89e051; }
-    .lang-default   { background: #6b7a8d; }
+    .lang-default   { background: #4d7a4d; }
 
-    /* ── Divider ──────────────────────────────────────────────── */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin: 0 auto;
+    /* ── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      nav ul { display: none; }
     }
   </style>
 </head>
@@ -578,48 +415,68 @@
 
   <!-- ── Nav ─────────────────────────────────────────────────── -->
   <nav>
-    <span class="logo">&lt;<span>Bhlyto</span> /&gt;</span>
+    <span class="logo">[bhlyto@dev ~]#</span>
     <ul>
-      <li><a href="#featured">Projects</a></li>
-      <li><a href="#all-repos">All Repos</a></li>
-      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">GitHub ↗</a></li>
+      <li><a href="#featured">projects</a></li>
+      <li><a href="#all-repos">repos</a></li>
+      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github</a></li>
     </ul>
   </nav>
 
   <!-- ── Hero ────────────────────────────────────────────────── -->
   <section id="hero">
-    <div class="hero-badge">Available for collaboration</div>
-    <h1>Bhlyto</h1>
-    <p class="subtitle">Systems programmer &amp; AI tinkerer. Building tools that make complex pipelines feel effortless.</p>
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="#featured">View Projects</a>
-      <a class="btn btn-ghost" href="https://github.com/Bhlyto" target="_blank" rel="noopener">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.461-1.11-1.461-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.547 1.376.203 2.393.1 2.646.641.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-        GitHub
-      </a>
-    </div>
-    <div class="scroll-hint">
-      SCROLL
-      <div class="arrow"></div>
+    <div class="term-block">
+      <div class="bar">terminal — 80x24</div>
+
+      <div class="prompt">
+        <span class="ps1">bhlyto@dev:~$</span>
+        <span class="cmd">whoami</span>
+      </div>
+      <div class="prompt-out">
+        <div class="hero-name">BHLYTO<span class="cursor"></span></div>
+        <div class="hero-desc">
+          # systems programmer &amp; spare-time tinkerer<br>
+          # perl / C / sh / fortran / numerical simulations<br>
+          # cave dweller. dark room. command line for breakfast.
+        </div>
+      </div>
+
+      <div class="prompt">
+        <span class="ps1">bhlyto@dev:~$</span>
+        <span class="cmd">ls projects/</span>
+      </div>
+      <div class="prompt-out" style="color:var(--cyan)">
+        SPAS-/&nbsp;&nbsp;&nbsp;BHC_SCHEDULER/&nbsp;&nbsp;&nbsp;ShardSim/
+      </div>
+
+      <div class="prompt">
+        <span class="ps1">bhlyto@dev:~$</span>
+        <span class="cmd"><span class="cursor" style="animation-delay:.6s"></span></span>
+      </div>
+
+      <div class="hero-links">
+        <a class="btn-retro"  href="#featured">[ view projects ]</a>
+        <a class="btn-outline" href="https://github.com/Bhlyto" target="_blank" rel="noopener">[ github ]</a>
+      </div>
     </div>
   </section>
 
-  <div class="divider"></div>
+  <hr class="divider">
 
   <!-- ── Featured projects ────────────────────────────────────── -->
   <section id="featured">
-    <div class="section-label">// featured work</div>
-    <h2 class="section-title">Highlighted Projects</h2>
-    <p class="section-sub">Hand-picked projects that best represent what I build.</p>
+    <div class="sec-cmd">
+      <span class="ps1">bhlyto@dev:~$</span>
+      <span class="cmd"> cat projects/featured.txt</span>
+    </div>
 
     <div class="featured-grid">
 
       <div class="feat-card">
         <div class="feat-card-header">
-          <div class="feat-card-icon">🤖</div>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">View ↗</a>
+          <h3>SPAS-</h3>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">[view →]</a>
         </div>
-        <h3>SPAS-</h3>
         <p class="summary">Small Programming Agents System — a local multi-agent workflow runner (Ollama + Python) with a desktop GUI and per-run workspace artifacts.</p>
         <ul class="bullets">
           <li>Designed for both casual and expert users.</li>
@@ -629,17 +486,16 @@
         </ul>
         <div class="feat-card-tags">
           <span class="tag">Python</span>
-          <span class="tag violet">Ollama</span>
-          <span class="tag green">LLM Agents</span>
+          <span class="tag">Ollama</span>
+          <span class="tag">LLM Agents</span>
         </div>
       </div>
 
       <div class="feat-card">
         <div class="feat-card-header">
-          <div class="feat-card-icon">⚙️</div>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">View ↗</a>
+          <h3>BHC_SCHEDULER</h3>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">[view →]</a>
         </div>
-        <h3>BHC_SCHEDULER</h3>
         <p class="summary">Lightweight job orchestration daemon in C with REST API and optional web dashboard for submitting, tracking, and managing cluster-wide jobs.</p>
         <ul class="bullets">
           <li>Priority queue, resource-aware allocation (CPU / RAM / GPU / disk).</li>
@@ -649,17 +505,16 @@
         </ul>
         <div class="feat-card-tags">
           <span class="tag">C</span>
-          <span class="tag violet">REST API</span>
-          <span class="tag green">Distributed</span>
+          <span class="tag">REST API</span>
+          <span class="tag">Distributed</span>
         </div>
       </div>
 
       <div class="feat-card">
         <div class="feat-card-header">
-          <div class="feat-card-icon">🔬</div>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">View ↗</a>
+          <h3>ShardSim</h3>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">[view →]</a>
         </div>
-        <h3>ShardSim</h3>
         <p class="summary">Distributed multi-fidelity simulation framework (DomainSim) with domain-specific learning and adaptive refinement.</p>
         <ul class="bullets">
           <li>Central decision core, multi-layer simulation, adaptive refinement.</li>
@@ -669,32 +524,32 @@
         </ul>
         <div class="feat-card-tags">
           <span class="tag">Simulation</span>
-          <span class="tag violet">ML</span>
-          <span class="tag green">Distributed</span>
+          <span class="tag">ML</span>
+          <span class="tag">Distributed</span>
         </div>
       </div>
 
     </div>
   </section>
 
-  <div class="divider"></div>
+  <hr class="divider">
 
   <!-- ── All repos ─────────────────────────────────────────────── -->
   <section id="all-repos">
-    <div class="section-label">// open source</div>
-    <h2 class="section-title">All Repositories</h2>
-    <p class="section-sub">Every public project, sorted by most recently updated.</p>
+    <div class="sec-cmd">
+      <span class="ps1">bhlyto@dev:~$</span>
+      <span class="cmd"> gh repo list Bhlyto --public --sort updated</span>
+    </div>
 
     <div id="loading">
-      <div class="spinner"></div>
-      Fetching repositories…
+      <span>fetching</span><span class="cursor"></span>
     </div>
     <div id="repos-grid"></div>
   </section>
 
   <!-- ── Footer ───────────────────────────────────────────────── -->
   <footer>
-    Built with ♥ by <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">Bhlyto</a> · Powered by the GitHub API
+    bhlyto@github.io :: <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github.com/Bhlyto</a> :: powered by GitHub API
   </footer>
 
   <script>
