@@ -37,7 +37,7 @@
 
     #repo-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 1.25rem;
       max-width: 1100px;
       margin: 0 auto;
@@ -50,11 +50,19 @@
       padding: 1.25rem 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.6rem;
       transition: border-color 0.2s;
     }
 
     .repo-card:hover {
+      border-color: #58a6ff;
+    }
+
+    .repo-card.featured {
+      border-color: #1f6feb;
+    }
+
+    .repo-card.featured:hover {
       border-color: #58a6ff;
     }
 
@@ -70,7 +78,38 @@
       text-decoration: underline;
     }
 
-    .repo-card p {
+    .repo-card .summary {
+      font-size: 0.9rem;
+      color: #c9d1d9;
+      line-height: 1.5;
+    }
+
+    .repo-card .bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .repo-card .bullets li {
+      font-size: 0.85rem;
+      color: #8b949e;
+      line-height: 1.5;
+      padding-left: 1.1rem;
+      position: relative;
+    }
+
+    .repo-card .bullets li::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      color: #58a6ff;
+      font-weight: 700;
+    }
+
+    .repo-card .plain-desc {
       font-size: 0.9rem;
       color: #8b949e;
       line-height: 1.5;
@@ -104,6 +143,71 @@
   <div id="repo-list"></div>
 
   <script>
+    const CURATED = {
+      'SPAS-': {
+        summary: 'Small Programming Agents System (SPAS) is a local multi-agent workflow runner (Ollama + Python) featuring a desktop GUI and per-run workspace artifacts.',
+        bullets: [
+          'Designed for both casual and expert users.',
+          'Integrates Python and Ollama (local LLM) for code generation, compilation, and execution.',
+          'Provides diagnostics, manages dependencies, and supports agent configuration.',
+          'Feature-rich GUI for workflow history, package management, and environment setup.'
+        ]
+      },
+      'BHC_SCHEDULER': {
+        summary: 'A lightweight job orchestration daemon in C with REST API and optional web dashboard for submitting, tracking, and managing jobs cluster-wide.',
+        bullets: [
+          'Priority job queue, resource-aware allocation (CPU/RAM/GPU/disk), multi-machine and presimulation workflows.',
+          'File management and live job streaming via Server-Sent Events (SSE).',
+          'Built-in dashboard, role-based user and API key management, and cross-platform daemon.',
+          'Cloud pool (AWS/GCP/Azure), Wake-on-LAN support.'
+        ]
+      },
+      'ShardSim': {
+        summary: 'ShardSim (DomainSim) is a distributed multi-fidelity simulation framework with domain-specific learning.',
+        bullets: [
+          'Central decision core, multi-layer simulation, and adaptive refinement for scientific problems.',
+          'Feedback loop for surrogate ML models and domain-specific learning.',
+          'Showcases a coarse-to-fine simulation pipeline and distributed orchestration.',
+          'Concrete experiments included (e.g. 2D heat diffusion).'
+        ]
+      }
+    };
+
+    function buildCard(name, url, curated, plainDesc) {
+      const card = document.createElement('div');
+      card.className = curated ? 'repo-card featured' : 'repo-card';
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = name;
+      card.appendChild(link);
+
+      if (curated) {
+        const summary = document.createElement('p');
+        summary.className = 'summary';
+        summary.textContent = curated.summary;
+        card.appendChild(summary);
+
+        const ul = document.createElement('ul');
+        ul.className = 'bullets';
+        curated.bullets.forEach(text => {
+          const li = document.createElement('li');
+          li.textContent = text;
+          ul.appendChild(li);
+        });
+        card.appendChild(ul);
+      } else {
+        const desc = document.createElement('p');
+        desc.className = 'plain-desc';
+        desc.textContent = plainDesc || 'Description not available.';
+        card.appendChild(desc);
+      }
+
+      return card;
+    }
+
     (async () => {
       const username = 'Bhlyto';
       const listEl = document.getElementById('repo-list');
@@ -137,28 +241,29 @@
         }
 
         allRepos.forEach(repo => {
-          const card = document.createElement('div');
-          card.className = 'repo-card';
-
-          const link = document.createElement('a');
-          link.href = repo.html_url;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.textContent = repo.name;
-
-          const desc = document.createElement('p');
-          desc.textContent = repo.description || 'No description provided.';
-
-          card.appendChild(link);
-          card.appendChild(desc);
-          listEl.appendChild(card);
+          listEl.appendChild(
+            buildCard(repo.name, repo.html_url, CURATED[repo.name], repo.description)
+          );
         });
       } catch (err) {
         loadingEl.style.display = 'none';
-        errorEl.style.display = 'block';
-        console.error('Failed to fetch repositories:', err);
+
+        // Fallback: GitHub API unavailable — show only the 3 featured repositories.
+        listEl.innerHTML = '<p style="text-align:center;color:#8b949e;margin-bottom:1.25rem;">Could not load the full repository list. Showing featured repositories only.</p>';
+
+        const fallbackRepos = [
+          { name: 'SPAS-', url: 'https://github.com/Bhlyto/SPAS-' },
+          { name: 'BHC_SCHEDULER', url: 'https://github.com/Bhlyto/BHC_SCHEDULER' },
+          { name: 'ShardSim', url: 'https://github.com/Bhlyto/ShardSim' }
+        ];
+
+        fallbackRepos.forEach(({ name, url }) => {
+          listEl.appendChild(buildCard(name, url, CURATED[name], null));
+        });
+
+        console.error('Failed to fetch repositories from GitHub API:', err);
       }
     })();
   </script>
-</body> 
+</body>
 </html>
