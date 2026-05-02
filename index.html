@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bhlyto — Developer Portfolio</title>
+  <title>Bhlyto — HPC Engineer Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -565,6 +565,85 @@
     .lang-Shell     { background: #89e051; }
     .lang-default   { background: #6b7a8d; }
 
+    /* ── About section ────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+
+    .about-bio {
+      font-size: .95rem;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .about-bio p + p { margin-top: 1rem; }
+
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .exp-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      transition: border-color var(--transition);
+    }
+
+    .exp-item:hover { border-color: var(--border-hi); }
+
+    .exp-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .5rem;
+    }
+
+    .exp-title {
+      font-size: .95rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .exp-period {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      color: var(--accent3);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: .15rem;
+    }
+
+    .exp-company {
+      font-size: .82rem;
+      color: var(--accent1);
+      margin-bottom: .6rem;
+      font-weight: 500;
+    }
+
+    .exp-desc {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: 1.5rem;
+    }
+
     /* ── Divider ──────────────────────────────────────────────── */
     .divider {
       width: 100%;
@@ -580,6 +659,7 @@
   <nav>
     <span class="logo">&lt;<span>Bhlyto</span> /&gt;</span>
     <ul>
+      <li><a href="#about">About</a></li>
       <li><a href="#featured">Projects</a></li>
       <li><a href="#all-repos">All Repos</a></li>
       <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">GitHub ↗</a></li>
@@ -588,11 +668,11 @@
 
   <!-- ── Hero ────────────────────────────────────────────────── -->
   <section id="hero">
-    <div class="hero-badge">Available for collaboration</div>
+    <div class="hero-badge">HPC Engineer · Open to collaboration</div>
     <h1>Bhlyto</h1>
-    <p class="subtitle">Systems programmer &amp; AI tinkerer. Building tools that make complex pipelines feel effortless.</p>
+    <p class="subtitle">HPC Engineer managing hybrid high-performance computing environments. Automating simulation workflows and optimizing complex pipelines across cloud and on-premise clusters.</p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#featured">View Projects</a>
+      <a class="btn btn-primary" href="#about">About Me</a>
       <a class="btn btn-ghost" href="https://github.com/Bhlyto" target="_blank" rel="noopener">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.461-1.11-1.461-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.547 1.376.203 2.393.1 2.646.641.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
         GitHub
@@ -606,11 +686,64 @@
 
   <div class="divider"></div>
 
+  <!-- ── About ────────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="section-label">// who I am</div>
+    <h2 class="section-title">About Me</h2>
+    <p class="section-sub">HPC Engineer with 5+ years of experience at Extia.</p>
+
+    <div class="about-grid">
+
+      <div class="about-bio">
+        <p>HPC Engineer specialised in Linux systems and networking, experienced in managing hybrid high-performance computing environments combining cloud resources and on-premise clusters.</p>
+        <p>Strong scripting background (Shell, PowerShell, Perl, Batch, Python) to automate workflows, prepare and launch simulation jobs, and detect and resolve pipeline errors.</p>
+        <p>Previous experience covers numerical simulation software integration for the automotive industry and multi-site infrastructure administration.</p>
+
+        <div class="skills-grid">
+          <span class="tag">Shell</span>
+          <span class="tag">Python</span>
+          <span class="tag">PowerShell</span>
+          <span class="tag">Perl</span>
+          <span class="tag">Batch</span>
+          <span class="tag violet">Linux</span>
+          <span class="tag violet">HPC</span>
+          <span class="tag violet">Networking</span>
+          <span class="tag green">Cloud</span>
+          <span class="tag green">On-Premise</span>
+          <span class="tag green">Simulation Workflows</span>
+        </div>
+      </div>
+
+      <div class="exp-list">
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-title">HPC Engineer</span>
+            <span class="exp-period">Jan 2024 – present</span>
+          </div>
+          <div class="exp-company">Extia · Bucharest, Romania · Hybrid</div>
+          <p class="exp-desc">Management and technical operations of a hybrid HPC environment. Develop and maintain automation scripts for job preparation, application launch, and workflow automation. Perform low-level Linux troubleshooting and network configuration adjustments for performance optimisation.</p>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-title">Numerical Simulation Software Integrator</span>
+            <span class="exp-period">Jan 2021 – Dec 2023</span>
+          </div>
+          <div class="exp-company">Extia · Remote</div>
+          <p class="exp-desc">Installation, configuration, and integration of simulation applications in HPC environments for the automotive industry. Managed application dependencies, licence servers, and wrote automation scripts for deployment and functional testing.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
   <!-- ── Featured projects ────────────────────────────────────── -->
   <section id="featured">
     <div class="section-label">// featured work</div>
     <h2 class="section-title">Highlighted Projects</h2>
-    <p class="section-sub">Hand-picked projects that best represent what I build.</p>
+    <p class="section-sub">Personal projects that reflect my interests in automation, HPC tooling, and scripting.</p>
 
     <div class="featured-grid">
 
@@ -694,7 +827,7 @@
 
   <!-- ── Footer ───────────────────────────────────────────────── -->
   <footer>
-    Built with ♥ by <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">Bhlyto</a> · Powered by the GitHub API
+    Built with ♥ by <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">Bhlyto</a> · HPC Engineer · Powered by the GitHub API
   </footer>
 
   <script>
