@@ -3,265 +3,827 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bhlyto's Repositories</title>
+  <title>Bhlyto — Developer Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    /* ── Reset & tokens ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #080b10;
+      --bg2:       #0e1219;
+      --bg3:       #151b25;
+      --border:    rgba(255,255,255,.07);
+      --border-hi: rgba(99,179,255,.35);
+      --text:      #dde6f0;
+      --muted:     #6b7a8d;
+      --accent1:   #63b3ff;   /* electric blue  */
+      --accent2:   #b388ff;   /* soft violet    */
+      --accent3:   #4fffb0;   /* mint green     */
+      --glow1:     rgba(99,179,255,.18);
+      --glow2:     rgba(179,136,255,.15);
+      --radius:    14px;
+      --transition: .25s cubic-bezier(.4,0,.2,1);
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #0d1117;
-      color: #c9d1d9;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      padding: 2rem 1rem;
+      overflow-x: hidden;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 2.5rem;
+    /* ── Animated mesh background ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% -10%, rgba(99,179,255,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 85% 110%, rgba(179,136,255,.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(79,255,176,.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    header h1 {
-      font-size: 2rem;
-      color: #e6edf3;
-      margin-bottom: 0.4rem;
-    }
-
-    header p {
-      color: #8b949e;
-      font-size: 1rem;
-    }
-
-    #repo-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.25rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .repo-card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 1.25rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      transition: border-color 0.2s;
-    }
-
-    .repo-card:hover {
-      border-color: #58a6ff;
-    }
-
-    .repo-card.featured {
-      border-color: #1f6feb;
-    }
-
-    .repo-card.featured:hover {
-      border-color: #58a6ff;
-    }
-
-    .repo-card a {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #58a6ff;
-      text-decoration: none;
-      word-break: break-word;
-    }
-
-    .repo-card a:hover {
-      text-decoration: underline;
-    }
-
-    .repo-card .summary {
-      font-size: 0.9rem;
-      color: #c9d1d9;
-      line-height: 1.5;
-    }
-
-    .repo-card .bullets {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-    }
-
-    .repo-card .bullets li {
-      font-size: 0.85rem;
-      color: #8b949e;
-      line-height: 1.5;
-      padding-left: 1.1rem;
-      position: relative;
-    }
-
-    .repo-card .bullets li::before {
-      content: "›";
-      position: absolute;
+    /* ── Nav ──────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
       left: 0;
-      color: #58a6ff;
-      font-weight: 700;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .9rem 2rem;
+      background: rgba(8,11,16,.75);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .repo-card .plain-desc {
-      font-size: 0.9rem;
-      color: #8b949e;
-      line-height: 1.5;
+    nav .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: .95rem;
+      color: var(--accent1);
+      letter-spacing: .04em;
+    }
+
+    nav .logo span { color: var(--accent2); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.8rem;
+    }
+
+    nav ul a {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .03em;
+      transition: color var(--transition);
+    }
+
+    nav ul a:hover { color: var(--text); }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 1.5rem 5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem;
+      color: var(--accent3);
+      background: rgba(79,255,176,.08);
+      border: 1px solid rgba(79,255,176,.2);
+      border-radius: 999px;
+      padding: .3rem .9rem;
+      margin-bottom: 1.6rem;
+      letter-spacing: .06em;
+      animation: fadeSlideDown .6s ease both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent3);
+      box-shadow: 0 0 8px var(--accent3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .3; }
+    }
+
+    #hero h1 {
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -.03em;
+      background: linear-gradient(135deg, #fff 0%, var(--accent1) 45%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeSlideDown .7s .1s ease both;
+    }
+
+    #hero .subtitle {
+      margin-top: 1.2rem;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-weight: 400;
+      color: var(--muted);
+      max-width: 540px;
+      line-height: 1.7;
+      animation: fadeSlideDown .7s .2s ease both;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeSlideDown .7s .3s ease both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .72rem 1.6rem;
+      border-radius: 999px;
+      font-size: .9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all var(--transition);
+      letter-spacing: .02em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(99,179,255,.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(99,179,255,.4);
+    }
+
+    .btn-ghost {
+      border: 1px solid var(--border-hi);
+      color: var(--text);
+      background: transparent;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(99,179,255,.07);
+      transform: translateY(-2px);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      color: var(--muted);
+      letter-spacing: .08em;
+      animation: fadeIn 1s 1s ease both;
+    }
+
+    .scroll-hint .arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      animation: bounce 1.8s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(5px); }
+    }
+
+    /* ── Section layout ───────────────────────────────────────── */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--accent1);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: .7rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      color: #fff;
+      margin-bottom: .6rem;
+    }
+
+    .section-sub {
+      font-size: .95rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    /* ── Featured project cards ───────────────────────────────── */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feat-card {
+      position: relative;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow: hidden;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .feat-card.visible {
+      opacity: 1;
+      transform: none;
+      transition: opacity .5s ease, transform .5s ease, border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .feat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--glow1) 0%, var(--glow2) 100%);
+      opacity: 0;
+      transition: opacity var(--transition);
+      pointer-events: none;
+    }
+
+    .feat-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 0 1px var(--border-hi);
+    }
+
+    .feat-card:hover::before { opacity: 1; }
+
+    .feat-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .feat-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .feat-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .25rem .75rem;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+
+    .feat-card-link:hover {
+      color: var(--accent1);
+      border-color: var(--border-hi);
+    }
+
+    .feat-card h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #fff;
+      letter-spacing: -.01em;
+    }
+
+    .feat-card .summary {
+      font-size: .9rem;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .feat-card .bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
       flex: 1;
     }
 
-    #error-message {
-      text-align: center;
-      color: #f85149;
-      font-size: 1rem;
-      margin-top: 2rem;
-      display: none;
+    .feat-card .bullets li {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      padding-left: 1rem;
+      position: relative;
     }
 
+    .feat-card .bullets li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--accent1);
+    }
+
+    .feat-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: auto;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      padding: .2rem .6rem;
+      border-radius: 999px;
+      background: rgba(99,179,255,.08);
+      border: 1px solid rgba(99,179,255,.15);
+      color: var(--accent1);
+      letter-spacing: .04em;
+    }
+
+    .tag.violet {
+      background: rgba(179,136,255,.08);
+      border-color: rgba(179,136,255,.15);
+      color: var(--accent2);
+    }
+
+    .tag.green {
+      background: rgba(79,255,176,.08);
+      border-color: rgba(79,255,176,.15);
+      color: var(--accent3);
+    }
+
+    /* ── All repos grid ───────────────────────────────────────── */
+    #repos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .repo-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+      transition: border-color var(--transition), transform var(--transition), background var(--transition);
+      opacity: 0;
+      transform: translateY(16px);
+      text-decoration: none;
+    }
+
+    .repo-card.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .repo-card:hover {
+      border-color: var(--border-hi);
+      background: var(--bg3);
+      transform: translateY(-3px);
+    }
+
+    .repo-card-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--accent1);
+      word-break: break-word;
+    }
+
+    .repo-card-desc {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .repo-card-meta {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      margin-top: .2rem;
+    }
+
+    .repo-lang {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .lang-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .repo-stars, .repo-forks {
+      display: flex;
+      align-items: center;
+      gap: .28rem;
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    /* ── Loading skeleton ─────────────────────────────────────── */
     #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .8rem;
+      padding: 3rem 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent1);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      color: #8b949e;
-      margin-top: 2rem;
-      font-size: 1rem;
+      padding: 2.5rem 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    footer a {
+      color: var(--accent1);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Animations ───────────────────────────────────────────── */
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      nav ul { display: none; }
+      .hero-cta { flex-direction: column; align-items: center; }
+    }
+
+    /* ── Lang colour map ──────────────────────────────────────── */
+    .lang-C         { background: #555599; }
+    .lang-Python    { background: #3572A5; }
+    .lang-JavaScript{ background: #f1e05a; }
+    .lang-TypeScript{ background: #2b7489; }
+    .lang-Rust      { background: #dea584; }
+    .lang-Go        { background: #00ADD8; }
+    .lang-HTML      { background: #e34c26; }
+    .lang-CSS       { background: #563d7c; }
+    .lang-Shell     { background: #89e051; }
+    .lang-default   { background: #6b7a8d; }
+
+    /* ── Divider ──────────────────────────────────────────────── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 auto;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Bhlyto's GitHub Repositories</h1>
-    <p>All public repositories</p>
-  </header>
 
-  <div id="loading">Loading repositories…</div>
-  <div id="error-message">Failed to load repositories. Please try again later.</div>
-  <div id="repo-list"></div>
+  <!-- ── Nav ─────────────────────────────────────────────────── -->
+  <nav>
+    <span class="logo">&lt;<span>Bhlyto</span> /&gt;</span>
+    <ul>
+      <li><a href="#featured">Projects</a></li>
+      <li><a href="#all-repos">All Repos</a></li>
+      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">GitHub ↗</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ────────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-badge">Available for collaboration</div>
+    <h1>Bhlyto</h1>
+    <p class="subtitle">Systems programmer &amp; AI tinkerer. Building tools that make complex pipelines feel effortless.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#featured">View Projects</a>
+      <a class="btn btn-ghost" href="https://github.com/Bhlyto" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.461-1.11-1.461-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.547 1.376.203 2.393.1 2.646.641.698 1.028 1.591 1.028 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        GitHub
+      </a>
+    </div>
+    <div class="scroll-hint">
+      SCROLL
+      <div class="arrow"></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── Featured projects ────────────────────────────────────── -->
+  <section id="featured">
+    <div class="section-label">// featured work</div>
+    <h2 class="section-title">Highlighted Projects</h2>
+    <p class="section-sub">Hand-picked projects that best represent what I build.</p>
+
+    <div class="featured-grid">
+
+      <div class="feat-card">
+        <div class="feat-card-header">
+          <div class="feat-card-icon">🤖</div>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">View ↗</a>
+        </div>
+        <h3>SPAS-</h3>
+        <p class="summary">Small Programming Agents System — a local multi-agent workflow runner (Ollama + Python) with a desktop GUI and per-run workspace artifacts.</p>
+        <ul class="bullets">
+          <li>Designed for both casual and expert users.</li>
+          <li>Integrates Python &amp; Ollama (local LLM) for code generation, compilation, and execution.</li>
+          <li>Provides diagnostics, manages dependencies, and supports agent configuration.</li>
+          <li>Feature-rich GUI: workflow history, package management, environment setup.</li>
+        </ul>
+        <div class="feat-card-tags">
+          <span class="tag">Python</span>
+          <span class="tag violet">Ollama</span>
+          <span class="tag green">LLM Agents</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-header">
+          <div class="feat-card-icon">⚙️</div>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">View ↗</a>
+        </div>
+        <h3>BHC_SCHEDULER</h3>
+        <p class="summary">Lightweight job orchestration daemon in C with REST API and optional web dashboard for submitting, tracking, and managing cluster-wide jobs.</p>
+        <ul class="bullets">
+          <li>Priority queue, resource-aware allocation (CPU / RAM / GPU / disk).</li>
+          <li>Live job streaming via Server-Sent Events (SSE).</li>
+          <li>Role-based user &amp; API-key management, cross-platform daemon.</li>
+          <li>Cloud pool (AWS / GCP / Azure) and Wake-on-LAN support.</li>
+        </ul>
+        <div class="feat-card-tags">
+          <span class="tag">C</span>
+          <span class="tag violet">REST API</span>
+          <span class="tag green">Distributed</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-header">
+          <div class="feat-card-icon">🔬</div>
+          <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">View ↗</a>
+        </div>
+        <h3>ShardSim</h3>
+        <p class="summary">Distributed multi-fidelity simulation framework (DomainSim) with domain-specific learning and adaptive refinement.</p>
+        <ul class="bullets">
+          <li>Central decision core, multi-layer simulation, adaptive refinement.</li>
+          <li>Feedback loop for surrogate ML models and domain-specific learning.</li>
+          <li>Coarse-to-fine simulation pipeline with distributed orchestration.</li>
+          <li>Concrete experiments included (e.g. 2D heat diffusion).</li>
+        </ul>
+        <div class="feat-card-tags">
+          <span class="tag">Simulation</span>
+          <span class="tag violet">ML</span>
+          <span class="tag green">Distributed</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── All repos ─────────────────────────────────────────────── -->
+  <section id="all-repos">
+    <div class="section-label">// open source</div>
+    <h2 class="section-title">All Repositories</h2>
+    <p class="section-sub">Every public project, sorted by most recently updated.</p>
+
+    <div id="loading">
+      <div class="spinner"></div>
+      Fetching repositories…
+    </div>
+    <div id="repos-grid"></div>
+  </section>
+
+  <!-- ── Footer ───────────────────────────────────────────────── -->
+  <footer>
+    Built with ♥ by <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">Bhlyto</a> · Powered by the GitHub API
+  </footer>
 
   <script>
-    const CURATED = {
-      'SPAS-': {
-        summary: 'Small Programming Agents System (SPAS) is a local multi-agent workflow runner (Ollama + Python) featuring a desktop GUI and per-run workspace artifacts.',
-        bullets: [
-          'Designed for both casual and expert users.',
-          'Integrates Python and Ollama (local LLM) for code generation, compilation, and execution.',
-          'Provides diagnostics, manages dependencies, and supports agent configuration.',
-          'Feature-rich GUI for workflow history, package management, and environment setup.'
-        ]
-      },
-      'BHC_SCHEDULER': {
-        summary: 'A lightweight job orchestration daemon in C with REST API and optional web dashboard for submitting, tracking, and managing jobs cluster-wide.',
-        bullets: [
-          'Priority job queue, resource-aware allocation (CPU/RAM/GPU/disk), multi-machine and presimulation workflows.',
-          'File management and live job streaming via Server-Sent Events (SSE).',
-          'Built-in dashboard, role-based user and API key management, and cross-platform daemon.',
-          'Cloud pool (AWS/GCP/Azure), Wake-on-LAN support.'
-        ]
-      },
-      'ShardSim': {
-        summary: 'ShardSim (DomainSim) is a distributed multi-fidelity simulation framework with domain-specific learning.',
-        bullets: [
-          'Central decision core, multi-layer simulation, and adaptive refinement for scientific problems.',
-          'Feedback loop for surrogate ML models and domain-specific learning.',
-          'Showcases a coarse-to-fine simulation pipeline and distributed orchestration.',
-          'Concrete experiments included (e.g. 2D heat diffusion).'
-        ]
-      }
+    /* ── Language colour map ──────────────────────────────────── */
+    const LANG_COLORS = {
+      'C': '#555599', 'C++': '#f34b7d', 'Python': '#3572A5',
+      'JavaScript': '#f1e05a', 'TypeScript': '#2b7489',
+      'Rust': '#dea584', 'Go': '#00ADD8', 'HTML': '#e34c26',
+      'CSS': '#563d7c', 'Shell': '#89e051', 'Java': '#b07219',
+      'Kotlin': '#A97BFF', 'Swift': '#FA7343', 'Ruby': '#701516',
+      'PHP': '#4F5D95', 'Lua': '#000080', 'Haskell': '#5e5086'
     };
 
-    function buildCard(name, url, curated, plainDesc) {
-      const card = document.createElement('div');
-      card.className = curated ? 'repo-card featured' : 'repo-card';
+    /* ── Intersection-observer fade-in ───────────────────────── */
+    function onIntersect(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }
+    const observer = new IntersectionObserver(onIntersect, { threshold: 0.08 });
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.textContent = name;
-      card.appendChild(link);
+    document.querySelectorAll('.feat-card').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.08}s`;
+      observer.observe(el);
+    });
 
-      if (curated) {
-        const summary = document.createElement('p');
-        summary.className = 'summary';
-        summary.textContent = curated.summary;
-        card.appendChild(summary);
+    /* ── Staggered repo card animation helper ─────────────────── */
+    function observeCard(card, delay) {
+      // delay = stagger of 40 ms per card, capped at 500 ms total
+      card.style.transition = [
+        `opacity .45s ${delay}s ease`,
+        `transform .45s ${delay}s ease`,
+        'border-color .25s ease',
+        'background .25s ease'
+      ].join(', ');
+      observer.observe(card);
+    }
 
-        const ul = document.createElement('ul');
-        ul.className = 'bullets';
-        curated.bullets.forEach(text => {
-          const li = document.createElement('li');
-          li.textContent = text;
-          ul.appendChild(li);
-        });
-        card.appendChild(ul);
-      } else {
-        const desc = document.createElement('p');
-        desc.className = 'plain-desc';
-        desc.textContent = plainDesc || 'Description not available.';
-        card.appendChild(desc);
+    /* ── Fetch & render repos ─────────────────────────────────── */
+    const FEATURED_NAMES = new Set(['SPAS-', 'BHC_SCHEDULER', 'ShardSim']);
+    const USERNAME = 'Bhlyto';
+
+    function buildRepoCard(repo) {
+      const card = document.createElement('a');
+      card.className = 'repo-card';
+      card.href = repo.html_url;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+
+      const name = document.createElement('div');
+      name.className = 'repo-card-name';
+      name.textContent = repo.name;
+      card.appendChild(name);
+
+      const desc = document.createElement('div');
+      desc.className = 'repo-card-desc';
+      desc.textContent = repo.description || 'No description available.';
+      card.appendChild(desc);
+
+      const meta = document.createElement('div');
+      meta.className = 'repo-card-meta';
+
+      if (repo.language) {
+        const langEl = document.createElement('span');
+        langEl.className = 'repo-lang';
+        const dot = document.createElement('span');
+        dot.className = 'lang-dot';
+        dot.style.background = LANG_COLORS[repo.language] || '#6b7a8d';
+        langEl.appendChild(dot);
+        langEl.appendChild(document.createTextNode(repo.language));
+        meta.appendChild(langEl);
       }
 
+      if (repo.stargazers_count > 0) {
+        const stars = document.createElement('span');
+        stars.className = 'repo-stars';
+        stars.innerHTML = `<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>${repo.stargazers_count}`;
+        meta.appendChild(stars);
+      }
+
+      if (repo.forks_count > 0) {
+        const forks = document.createElement('span');
+        forks.className = 'repo-forks';
+        forks.innerHTML = `<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>${repo.forks_count}`;
+        meta.appendChild(forks);
+      }
+
+      card.appendChild(meta);
       return card;
     }
 
     (async () => {
-      const username = 'Bhlyto';
-      const listEl = document.getElementById('repo-list');
-      const loadingEl = document.getElementById('loading');
-      const errorEl = document.getElementById('error-message');
+      const grid     = document.getElementById('repos-grid');
+      const loadEl   = document.getElementById('loading');
 
       try {
         const allRepos = [];
-        let page = 1;
-        let repos;
-
+        let page = 1, batch;
         do {
-          const response = await fetch(
-            `https://api.github.com/users/${username}/repos?per_page=100&page=${page}&sort=updated`
-          );
-
-          if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
-          }
-
-          repos = await response.json();
-          allRepos.push(...repos);
+          const r = await fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100&page=${page}&sort=updated`);
+          if (!r.ok) throw new Error(`GitHub API ${r.status}`);
+          batch = await r.json();
+          allRepos.push(...batch);
           page++;
-        } while (repos.length === 100);
+        } while (batch.length === 100);
 
-        loadingEl.style.display = 'none';
+        loadEl.style.display = 'none';
 
-        if (allRepos.length === 0) {
-          listEl.innerHTML = '<p style="text-align:center;color:#8b949e;">No public repositories found.</p>';
+        if (!allRepos.length) {
+          grid.innerHTML = '<p style="color:var(--muted);text-align:center">No public repositories found.</p>';
           return;
         }
 
-        allRepos.forEach(repo => {
-          listEl.appendChild(
-            buildCard(repo.name, repo.html_url, CURATED[repo.name], repo.description)
-          );
-        });
+        allRepos
+          .filter(r => !FEATURED_NAMES.has(r.name))
+          .forEach((repo, i) => {
+            const card = buildRepoCard(repo);
+            grid.appendChild(card);
+            // stagger: 40 ms per card, capped at 500 ms
+            observeCard(card, Math.min(i * 0.04, 0.5));
+          });
+
       } catch (err) {
-        loadingEl.style.display = 'none';
-
-        // Fallback: GitHub API unavailable — show only the 3 featured repositories.
-        listEl.innerHTML = '<p style="text-align:center;color:#8b949e;margin-bottom:1.25rem;">Could not load the full repository list. Showing featured repositories only.</p>';
-
-        const fallbackRepos = [
-          { name: 'SPAS-', url: 'https://github.com/Bhlyto/SPAS-' },
-          { name: 'BHC_SCHEDULER', url: 'https://github.com/Bhlyto/BHC_SCHEDULER' },
-          { name: 'ShardSim', url: 'https://github.com/Bhlyto/ShardSim' }
-        ];
-
-        fallbackRepos.forEach(({ name, url }) => {
-          listEl.appendChild(buildCard(name, url, CURATED[name], null));
-        });
-
-        console.error('Failed to fetch repositories from GitHub API:', err);
+        loadEl.style.display = 'none';
+        grid.innerHTML = '<p style="color:var(--muted);text-align:center">Could not load repositories — check back later.</p>';
+        console.error(err);
       }
     })();
   </script>
