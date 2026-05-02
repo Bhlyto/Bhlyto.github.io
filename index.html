@@ -5,17 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bhlyto — My Computer</title>
   <style>
-    /* ============================================================
-       RESET + BASE
-    ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
 
     body {
       font-family: Tahoma, 'MS Sans Serif', Arial, sans-serif;
       font-size: 11px;
-      /* XP Bliss sky + rolling hills via CSS */
       background:
         radial-gradient(ellipse 140px 60px at 18% 22%, rgba(255,255,255,.92) 0%, transparent 70%),
         radial-gradient(ellipse 95px  40px at 30% 14%, rgba(255,255,255,.88) 0%, transparent 68%),
@@ -34,15 +28,10 @@
     a { color: #0040cc; text-decoration: none; }
     a:hover { text-decoration: underline; color: #0028aa; }
 
-    /* ============================================================
-       PAGE WRAPPER — windows stack vertically
-    ============================================================ */
-    .page { display: flex; flex-direction: column; gap: 22px; max-width: 900px; margin: 0 auto; }
-
-    /* ============================================================
-       XP WINDOW CHROME
-    ============================================================ */
+    /* ── Window chrome ── */
     .xp-win {
+      max-width: 780px;
+      margin: 0 auto;
       border: 3px solid #1252c0;
       border-radius: 7px 7px 0 0;
       box-shadow: 3px 3px 18px rgba(0,0,0,.6);
@@ -52,21 +41,19 @@
       outline: 1px solid #0830a8;
     }
 
-    /* title bar */
     .xp-titlebar {
       display: flex; align-items: center; gap: 5px;
       padding: 3px 5px 4px 7px;
       background: linear-gradient(to bottom,
-        #4a90d8 0%, #2870d0 6%, #1a62cc 14%,
-        #1a62cc 82%, #1050b8 100%
+        #4a90d8 0%, #2870d0 6%, #1a62cc 14%, #1a62cc 82%, #1050b8 100%
       );
       border-radius: 5px 5px 0 0;
       color: white; font-weight: bold; font-size: 12px;
       text-shadow: 1px 1px 1px rgba(0,0,60,.5);
-      flex-shrink: 0; cursor: default;
+      flex-shrink: 0;
     }
     .xp-titlebar .ti  { font-size: 16px; line-height: 1; flex-shrink: 0; }
-    .xp-titlebar .txt { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .xp-titlebar .txt { flex: 1; }
     .tb-btns { display: flex; gap: 2px; margin-left: 4px; }
     .tb-btn {
       width: 21px; height: 21px; border-radius: 3px;
@@ -81,11 +68,9 @@
     }
     .tb-btn.cl {
       background: linear-gradient(to bottom, #e87050, #d44020 50%, #c03010);
-      border: 1px solid #901000;
-      margin-left: 2px;
+      border: 1px solid #901000; margin-left: 2px;
     }
 
-    /* menu bar */
     .xp-menubar {
       display: flex; padding: 2px 4px;
       background: #ece9d8; border-bottom: 1px solid #aca899; flex-shrink: 0;
@@ -93,37 +78,32 @@
     .xp-menubar span { padding: 1px 6px; cursor: default; border: 1px solid transparent; }
     .xp-menubar span:hover { background: #316ac5; color: white; border-color: #316ac5; }
 
-    /* toolbar / address bar */
     .xp-toolbar {
-      display: flex; align-items: center; gap: 3px; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 3px;
       padding: 2px 5px; background: #ece9d8;
       border-bottom: 2px solid #aca899; flex-shrink: 0;
     }
     .tb-nav {
       padding: 1px 7px;
       background: linear-gradient(to bottom, #f5f3ec, #e0dccf);
-      border: 1px solid #aca899; font-size: 10px; cursor: pointer; white-space: nowrap;
-      font-family: Tahoma, Arial, sans-serif;
+      border: 1px solid #aca899; font-size: 10px; cursor: default; white-space: nowrap;
+      font-family: Tahoma, Arial, sans-serif; opacity: .6;
     }
-    .tb-nav:hover   { background: linear-gradient(to bottom, #fff, #ece9d8); border-color: #316ac5; }
-    .tb-nav:disabled { opacity: .5; cursor: default; }
     .addr-lbl { font-size: 11px; color: #444; white-space: nowrap; }
     .addr-bar {
-      flex: 1; min-width: 80px; height: 20px; border: 1px solid #7a7878;
+      flex: 1; height: 20px; border: 1px solid #7a7878;
       padding: 1px 4px; font-size: 11px; background: white; color: #333;
       outline: none; font-family: Tahoma, Arial, sans-serif;
     }
 
-    /* explorer body */
-    .xp-body { display: flex; overflow: hidden; }
+    /* ── Explorer body ── */
+    .xp-body { display: flex; }
 
-    /* ============================================================
-       LEFT TASK PANEL
-    ============================================================ */
+    /* ── Left task panel ── */
     .xp-left {
-      width: 188px; flex-shrink: 0;
+      width: 175px; flex-shrink: 0;
       background: linear-gradient(to bottom, #6ba6e8 0%, #5490d8 100%);
-      padding: 6px 0; overflow-y: auto;
+      padding: 6px 0;
     }
     .task-section   { margin: 0 6px 7px 6px; }
     .task-sec-hdr {
@@ -146,479 +126,229 @@
     .task-sec-body a:hover { text-decoration: underline; }
     .task-sec-body a .si { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
     .detail-inner {
-      background: white; padding: 6px 8px; font-size: 11px; color: #333; line-height: 1.65;
+      background: white; padding: 6px 8px;
+      font-size: 11px; color: #333; line-height: 1.8;
     }
+    .detail-inner a { font-size: 11px; }
 
-    /* ============================================================
-       RIGHT CONTENT PANE
-    ============================================================ */
+    /* ── Right content pane ── */
     .xp-right {
-      flex: 1; overflow-y: auto; padding: 10px 14px;
+      flex: 1; overflow-y: auto; padding: 12px 16px;
       background: white; border-left: 1px solid #aca899;
     }
     .xp-section { margin-bottom: 18px; }
     .xp-section h4 {
       font-size: 13px; font-weight: normal; color: #003399;
-      border-bottom: 1px solid #c8c8c8; padding-bottom: 3px; margin-bottom: 8px;
+      border-bottom: 1px solid #c8c8c8; padding-bottom: 3px; margin-bottom: 10px;
     }
 
-    /* folder icon grid */
-    .file-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    /* Folder icons */
+    .file-grid { display: flex; flex-wrap: wrap; gap: 4px; }
     .xp-folder {
       display: flex; flex-direction: column; align-items: center;
-      width: 84px; padding: 4px 3px; text-decoration: none; color: #000;
+      width: 82px; padding: 4px 3px; text-decoration: none; color: #000;
       border: 1px solid transparent; font-size: 11px; text-align: center; line-height: 1.3;
     }
     .xp-folder:hover { background: rgba(49,106,197,.12); border-color: #316ac5; }
-    .xp-folder .fi { font-size: 34px; line-height: 1; margin-bottom: 3px; }
+    .xp-folder .fi { font-size: 36px; line-height: 1; margin-bottom: 3px; }
 
-    /* project cards */
-    .proj-card {
-      margin-top: 8px; border: 1px solid #d0d0d0;
-      padding: 8px 10px; background: #fdfdfd; font-size: 11px;
-    }
-    .proj-card h5 { font-size: 12px; font-weight: bold; color: #003399; margin-bottom: 4px; }
-    .proj-card p  { color: #444; line-height: 1.6; margin-bottom: 3px; }
-    .proj-card ul { padding-left: 16px; color: #555; line-height: 1.6; }
-    .proj-tags    { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
-    .ptag { padding: 1px 5px; border: 1px solid #b0b0c8; font-size: 10px; color: #333; background: #eeeef8; }
-
-    /* drives */
-    .xp-drives { display: flex; flex-direction: column; gap: 3px; }
+    /* Drives */
     .xp-drive {
-      display: flex; align-items: center; gap: 10px;
-      padding: 4px 5px; text-decoration: none; color: #000; border: 1px solid transparent;
+      display: flex; align-items: center; gap: 12px;
+      padding: 4px 5px; text-decoration: none; color: #000;
+      border: 1px solid transparent; margin-bottom: 3px;
     }
     .xp-drive:hover { background: rgba(49,106,197,.1); border-color: #316ac5; }
-    .xp-drive .di { font-size: 30px; flex-shrink: 0; }
+    .xp-drive .di { font-size: 32px; flex-shrink: 0; }
     .drv-name { font-weight: bold; font-size: 11px; }
     .drv-sub  { font-size: 10px; color: #666; }
     .drv-bar  { height: 7px; width: 120px; background: #c0c0c0; border: 1px inset #888; margin-top: 2px; }
     .drv-fill { height: 100%; background: #316ac5; }
 
-    /* about me links */
-    .about-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-    .alink {
-      display: flex; align-items: center; gap: 6px; padding: 3px 5px;
-      text-decoration: none; color: #0040cc; border: 1px solid transparent; font-size: 11px;
+    /* About Me links */
+    .about-grid {
+      display: flex; flex-wrap: wrap; gap: 16px;
     }
-    .alink:hover { text-decoration: underline; border-color: #316ac5; background: rgba(49,106,197,.1); }
-    .alink .ali { font-size: 22px; }
+    .alink {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; text-decoration: none; color: #0040cc; font-size: 11px;
+      width: 80px; text-align: center;
+    }
+    .alink:hover { text-decoration: underline; }
+    .alink .ali { font-size: 36px; line-height: 1; }
 
-    /* bio */
-    .bio { font-size: 11px; color: #333; line-height: 1.7; }
-    .bio p { margin-bottom: 5px; }
-
-    /* experience */
-    .exp-list { display: flex; flex-direction: column; gap: 6px; }
-    .exp-item { border: 1px solid #d0d0d0; padding: 7px 10px; background: #fdfdfd; }
-    .exp-hdr  { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 2px; }
-    .exp-title   { font-weight: bold; font-size: 11px; }
-    .exp-period  { font-size: 10px; color: #0040cc; white-space: nowrap; flex-shrink: 0; }
-    .exp-company { font-size: 10px; color: #666; margin-bottom: 3px; }
-    .exp-desc    { font-size: 11px; color: #444; line-height: 1.6; }
-
-    /* skills */
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
-    .stag { padding: 1px 5px; border: 1px solid #b0b0c8; font-size: 10px; color: #333; background: #eeeef8; }
-
-    /* status bar */
+    /* Status bar */
     .xp-statusbar {
       padding: 1px 8px; background: #ece9d8; border-top: 1px solid #aca899;
       font-size: 11px; color: #444; flex-shrink: 0;
     }
 
-    /* ============================================================
-       REPOS WINDOW
-    ============================================================ */
-    .repo-col-hdr {
-      display: flex; align-items: center; gap: 6px; padding: 2px 4px;
-      background: #ece9d8; border-bottom: 1px solid #aca899;
-      font-size: 11px; font-weight: bold; flex-shrink: 0;
-    }
-    .repo-col-hdr .ch0 { width: 22px; }
-    .repo-col-hdr .ch1 { width: 180px; }
-    .repo-col-hdr .ch2 { flex: 1; }
-    .repo-col-hdr .ch3 { width: 90px; text-align: right; }
-
-    .repo-row {
-      display: flex; align-items: center; gap: 6px; padding: 2px 4px;
-      text-decoration: none; color: #000; border-bottom: 1px solid #f0f0f0; font-size: 11px;
-    }
-    .repo-row:hover { background: #316ac5; color: white; }
-    .repo-row:hover .rdesc, .repo-row:hover .rlang { color: rgba(255,255,255,.85); }
-    .repo-row .ric   { font-size: 15px; width: 22px; flex-shrink: 0; }
-    .repo-row .rname { width: 180px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
-    .repo-row .rdesc { flex: 1; color: #555; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .repo-row .rlang { width: 90px; text-align: right; font-size: 10px; color: #777; flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end; gap: 3px; }
-    .ldot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-    #repos-loading { padding: 20px; text-align: center; color: #666; }
-
-    /* ============================================================
-       SCROLLBAR (XP-ish)
-    ============================================================ */
+    /* XP scrollbar */
     ::-webkit-scrollbar { width: 16px; }
     ::-webkit-scrollbar-track { background: #c8c4b4; }
     ::-webkit-scrollbar-thumb { background: #a8a090; border: 1px solid #888; }
 
-    /* ============================================================
-       MOBILE
-    ============================================================ */
-    @media (max-width: 640px) {
+    @media (max-width: 600px) {
       body { padding: 8px 6px 24px; }
       .xp-body { flex-direction: column; }
       .xp-left { width: 100%; }
-      .repo-col-hdr .ch2, .repo-row .rdesc { display: none; }
     }
   </style>
 </head>
 <body>
 
-<div class="page">
+<div class="xp-win">
 
-  <!-- ============================================================
-       WINDOW 1 — My Computer
-  ============================================================= -->
-  <div class="xp-win">
-    <div class="xp-titlebar">
-      <span class="ti">🖥️</span>
-      <span class="txt">My Computer</span>
-      <div class="tb-btns">
-        <button class="tb-btn mn">&#x2013;</button>
-        <button class="tb-btn mx">&#x25A1;</button>
-        <button class="tb-btn cl">&#x2715;</button>
-      </div>
+  <div class="xp-titlebar">
+    <span class="ti">🖥️</span>
+    <span class="txt">My Computer</span>
+    <div class="tb-btns">
+      <button class="tb-btn mn">&#x2013;</button>
+      <button class="tb-btn mx">&#x25A1;</button>
+      <button class="tb-btn cl">&#x2715;</button>
     </div>
-    <div class="xp-menubar">
-      <span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
-    </div>
-    <div class="xp-toolbar">
-      <button class="tb-nav" disabled>&#x2190;</button>
-      <button class="tb-nav" disabled>&#x2192;</button>
-      <button class="tb-nav" disabled>&#x2191;</button>
-      <span style="width:1px;background:#aca899;align-self:stretch;margin:0 3px"></span>
-      <span class="addr-lbl">Address</span>
-      <input class="addr-bar" value="My Computer" readonly />
-      <button class="tb-nav">Go</button>
-    </div>
-    <div class="xp-body">
+  </div>
 
-      <!-- LEFT PANEL -->
-      <div class="xp-left">
-        <div class="task-section">
-          <div class="task-sec-hdr" onclick="toggleSec(this)">System Tasks</div>
-          <div class="task-sec-body">
-            <a href="#win-repos"><span class="si">📋</span> View system information</a>
-            <a href="https://github.com/Bhlyto/SPAS-" target="_blank"><span class="si">➕</span> Add or remove programs</a>
-            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">⚙️</span> Change a setting</a>
-          </div>
-        </div>
-        <div class="task-section">
-          <div class="task-sec-hdr" onclick="toggleSec(this)">Other Places</div>
-          <div class="task-sec-body">
-            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">🌐</span> My Network Places</a>
-            <a href="#about-section"><span class="si">📄</span> My Documents</a>
-            <a href="https://github.com/Bhlyto?tab=repositories" target="_blank"><span class="si">📂</span> Shared Documents</a>
-            <a href="#win-repos"><span class="si">🎛️</span> Control Panel</a>
-          </div>
-        </div>
-        <div class="task-section">
-          <div class="task-sec-hdr" onclick="toggleSec(this)">Details</div>
-          <div class="detail-inner" id="main-details">
-            <strong>Bhlyto</strong><br>HPC Engineer<br><br><small style="color:#666">Loading stats…</small>
-          </div>
+  <div class="xp-menubar">
+    <span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
+  </div>
+
+  <div class="xp-toolbar">
+    <button class="tb-nav">&#x2190;</button>
+    <button class="tb-nav">&#x2192;</button>
+    <button class="tb-nav">&#x2191;</button>
+    <span style="width:1px;background:#aca899;align-self:stretch;margin:0 3px"></span>
+    <span class="addr-lbl">Address</span>
+    <input class="addr-bar" value="My Computer" readonly />
+    <button class="tb-nav">Go</button>
+  </div>
+
+  <div class="xp-body">
+
+    <!-- LEFT PANEL -->
+    <div class="xp-left">
+
+      <div class="task-section">
+        <div class="task-sec-hdr" onclick="toggleSec(this)">System Tasks</div>
+        <div class="task-sec-body">
+          <a href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">
+            <span class="si">📋</span> View system information
+          </a>
+          <a href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">
+            <span class="si">➕</span> Add or remove programs
+          </a>
+          <a href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">
+            <span class="si">⚙️</span> Change a setting
+          </a>
         </div>
       </div>
 
-      <!-- RIGHT CONTENT -->
-      <div class="xp-right">
-
-        <div class="xp-section">
-          <h4>Files Stored on This Computer</h4>
-          <div class="file-grid">
-            <a class="xp-folder" href="https://github.com/Bhlyto/SPAS-" target="_blank">
-              <span class="fi">📁</span><span>SPAS-</span>
-            </a>
-            <a class="xp-folder" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank">
-              <span class="fi">📁</span><span>BHC_SCHEDULER</span>
-            </a>
-            <a class="xp-folder" href="https://github.com/Bhlyto/ShardSim" target="_blank">
-              <span class="fi">📁</span><span>ShardSim</span>
-            </a>
-          </div>
-
-          <div class="proj-card" style="margin-top:12px">
-            <h5>📁 SPAS-</h5>
-            <p>Small Programming Agents System — local multi-agent workflow runner (Ollama + Python) with desktop GUI and per-run workspace artifacts.</p>
-            <ul>
-              <li>Python + Ollama (local LLM) for code generation, compile, execute</li>
-              <li>Diagnostics, dependency management, agent configuration</li>
-              <li>GUI: workflow history, package management, env setup</li>
-            </ul>
-            <div class="proj-tags">
-              <span class="ptag">Python</span><span class="ptag">Ollama</span><span class="ptag">LLM Agents</span>
-            </div>
-          </div>
-
-          <div class="proj-card">
-            <h5>📁 BHC_SCHEDULER</h5>
-            <p>Lightweight job orchestration daemon in C with REST API and optional web dashboard for cluster-wide job submission and tracking.</p>
-            <ul>
-              <li>Priority queue, resource-aware allocation (CPU/RAM/GPU/disk)</li>
-              <li>Live job streaming via SSE. Role-based user &amp; API-key management</li>
-              <li>Cloud pool (AWS/GCP/Azure) and Wake-on-LAN support</li>
-            </ul>
-            <div class="proj-tags">
-              <span class="ptag">C</span><span class="ptag">REST API</span><span class="ptag">Distributed</span>
-            </div>
-          </div>
-
-          <div class="proj-card">
-            <h5>📁 ShardSim</h5>
-            <p>Distributed multi-fidelity simulation framework with domain-specific learning and adaptive refinement.</p>
-            <ul>
-              <li>Central decision core, multi-layer simulation, adaptive refinement</li>
-              <li>Surrogate ML feedback loop and domain-specific learning</li>
-              <li>Coarse-to-fine pipeline, distributed orchestration</li>
-            </ul>
-            <div class="proj-tags">
-              <span class="ptag">Simulation</span><span class="ptag">ML</span><span class="ptag">Distributed</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="xp-section">
-          <h4>Hard Disk Drives</h4>
-          <div class="xp-drives">
-            <a class="xp-drive" href="https://github.com/Bhlyto" target="_blank">
-              <span class="di">💾</span>
-              <div>
-                <div class="drv-name">Local Disk (C:)</div>
-                <div class="drv-sub">Shell scripts, Perl, simulation jobs, C, Python</div>
-                <div class="drv-bar"><div class="drv-fill" style="width:68%"></div></div>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <div class="xp-section">
-          <h4>Devices with Removable Storage</h4>
-          <div class="xp-drives">
-            <a class="xp-drive" href="#win-repos">
-              <span class="di">📀</span>
-              <div>
-                <div class="drv-name">CD Drive (D:) — All Repositories</div>
-                <div class="drv-sub">Every public project, sorted by last updated</div>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <div class="xp-section" id="about-section">
-          <h4>About Me :)</h4>
-          <div class="bio">
-            <p>HPC Engineer specialised in Linux systems and networking. Managing hybrid high-performance computing environments — cloud and on-premise clusters.</p>
-            <p>Shell scripts from 2006, Perl, numerical simulation software (automotive, 2017), C. Automating workflows, preparing and launching simulation jobs, detecting and resolving pipeline errors.</p>
-            <p>5+ years @ Extia. This site is just a place to drop personal projects done on spare time.</p>
-          </div>
-          <div class="skill-tags">
-            <span class="stag">Shell</span><span class="stag">Perl</span><span class="stag">Python</span>
-            <span class="stag">PowerShell</span><span class="stag">Batch</span><span class="stag">C</span>
-            <span class="stag">Linux</span><span class="stag">HPC</span><span class="stag">Networking</span>
-            <span class="stag">Cloud</span><span class="stag">On-Premise</span><span class="stag">Simulation</span>
-          </div>
-          <div class="about-links">
-            <a class="alink" href="https://github.com/Bhlyto" target="_blank">
-              <span class="ali">🐙</span> Github
-            </a>
-            <a class="alink" href="#win-repos">
-              <span class="ali">📁</span> My Projects
-            </a>
-          </div>
-        </div>
-
-        <div class="xp-section">
-          <h4>Work Experience</h4>
-          <div class="exp-list">
-            <div class="exp-item">
-              <div class="exp-hdr">
-                <span class="exp-title">HPC Engineer</span>
-                <span class="exp-period">Jan 2024 – present</span>
-              </div>
-              <div class="exp-company">Extia · Bucharest, Romania · Hybrid</div>
-              <p class="exp-desc">Hybrid HPC environment management. Automation scripts for job preparation, app launch, and workflow automation. Low-level Linux troubleshooting, network configuration, performance optimisation.</p>
-            </div>
-            <div class="exp-item">
-              <div class="exp-hdr">
-                <span class="exp-title">Numerical Simulation Software Integrator</span>
-                <span class="exp-period">Jan 2021 – Dec 2023</span>
-              </div>
-              <div class="exp-company">Extia · Remote</div>
-              <p class="exp-desc">Installation, configuration, and integration of simulation applications on HPC clusters for the automotive industry. Application dependencies, licence servers, deployment scripts, compatibility troubleshooting.</p>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /.xp-right -->
-    </div><!-- /.xp-body -->
-    <div class="xp-statusbar" id="main-status">3 objects</div>
-  </div><!-- /.xp-win (My Computer) -->
-
-
-  <!-- ============================================================
-       WINDOW 2 — All Repositories
-  ============================================================= -->
-  <div class="xp-win" id="win-repos">
-    <div class="xp-titlebar">
-      <span class="ti">📂</span>
-      <span class="txt">My Projects — All Repositories</span>
-      <div class="tb-btns">
-        <button class="tb-btn mn">&#x2013;</button>
-        <button class="tb-btn mx">&#x25A1;</button>
-        <button class="tb-btn cl">&#x2715;</button>
-      </div>
-    </div>
-    <div class="xp-menubar">
-      <span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
-    </div>
-    <div class="xp-toolbar">
-      <button class="tb-nav" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#x2190; Back</button>
-      <button class="tb-nav" disabled>&#x2192;</button>
-      <span class="addr-lbl">Address</span>
-      <input class="addr-bar" value="https://github.com/Bhlyto?tab=repositories" readonly />
-      <button class="tb-nav">Go</button>
-    </div>
-    <div class="xp-body">
-
-      <div class="xp-left">
-        <div class="task-section">
-          <div class="task-sec-hdr" onclick="toggleSec(this)">File and Folder Tasks</div>
-          <div class="task-sec-body">
-            <a href="https://github.com/new" target="_blank"><span class="si">📁</span> Make a new folder</a>
-            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">🌐</span> Publish this folder</a>
-          </div>
-        </div>
-        <div class="task-section">
-          <div class="task-sec-hdr" onclick="toggleSec(this)">Other Places</div>
-          <div class="task-sec-body">
-            <a href="#"><span class="si">🖥️</span> My Computer</a>
-            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">🌐</span> My Network Places</a>
-            <a href="#about-section"><span class="si">📄</span> My Documents</a>
-          </div>
-        </div>
-        <div class="task-section">
-          <div class="task-sec-hdr" onclick="toggleSec(this)">Details</div>
-          <div class="detail-inner" id="repos-details">Loading…</div>
+      <div class="task-section">
+        <div class="task-sec-hdr" onclick="toggleSec(this)">Other Places</div>
+        <div class="task-sec-body">
+          <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">
+            <span class="si">🌐</span> My Network Places
+          </a>
+          <a href="https://github.com/Bhlyto?tab=repositories" target="_blank" rel="noopener">
+            <span class="si">📂</span> My Documents
+          </a>
+          <a href="https://github.com/Bhlyto?tab=repositories" target="_blank" rel="noopener">
+            <span class="si">📁</span> Shared Documents
+          </a>
+          <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">
+            <span class="si">🎛️</span> Control Panel
+          </a>
         </div>
       </div>
 
-      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:white;border-left:1px solid #aca899">
-        <div class="repo-col-hdr">
-          <span class="ch0"></span>
-          <span class="ch1">Name</span>
-          <span class="ch2">Description</span>
-          <span class="ch3">Language</span>
-        </div>
-        <div style="overflow-y:auto;flex:1">
-          <div id="repos-loading">Fetching repositories…</div>
-          <div id="repos-list"></div>
+      <div class="task-section">
+        <div class="task-sec-hdr" onclick="toggleSec(this)">Details</div>
+        <div class="detail-inner" id="main-details">
+          <strong>Bhlyto</strong><br>
+          HPC Engineer<br>
+          <span id="star-count"></span>
         </div>
       </div>
 
     </div>
-    <div class="xp-statusbar" id="repos-status">Loading…</div>
-  </div><!-- /.xp-win (Repos) -->
 
-</div><!-- /.page -->
+    <!-- RIGHT CONTENT -->
+    <div class="xp-right">
+
+      <div class="xp-section">
+        <h4>Files Stored on This Computer</h4>
+        <div class="file-grid">
+          <a class="xp-folder" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">
+            <span class="fi">📁</span><span>SPAS-</span>
+          </a>
+          <a class="xp-folder" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">
+            <span class="fi">📁</span><span>BHC_SCHEDULER</span>
+          </a>
+          <a class="xp-folder" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">
+            <span class="fi">📁</span><span>ShardSim</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="xp-section">
+        <h4>Hard Disk Drives</h4>
+        <a class="xp-drive" href="https://github.com/Bhlyto" target="_blank" rel="noopener">
+          <span class="di">💾</span>
+          <div>
+            <div class="drv-name">Local Disk (C:)</div>
+            <div class="drv-sub">Shell, Perl, C, Python, simulation jobs</div>
+            <div class="drv-bar"><div class="drv-fill" style="width:68%"></div></div>
+          </div>
+        </a>
+      </div>
+
+      <div class="xp-section">
+        <h4>Devices with Removable Storage</h4>
+        <a class="xp-drive" href="https://github.com/Bhlyto?tab=repositories" target="_blank" rel="noopener">
+          <span class="di">📀</span>
+          <div>
+            <div class="drv-name">CD Drive (D:)</div>
+            <div class="drv-sub">All public repositories</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="xp-section">
+        <h4>About Me :)</h4>
+        <div class="about-grid">
+          <a class="alink" href="https://github.com/Bhlyto" target="_blank" rel="noopener">
+            <span class="ali">🐙</span><span>Github</span>
+          </a>
+          <a class="alink" href="https://github.com/Bhlyto?tab=repositories" target="_blank" rel="noopener">
+            <span class="ali">📂</span><span>My Repos</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /.xp-body -->
+
+  <div class="xp-statusbar">3 objects</div>
+
+</div><!-- /.xp-win -->
 
 <script>
-  /* ============================================================
-     SECTION TOGGLE
-  ============================================================ */
   function toggleSec(hdr) {
     hdr.classList.toggle('col');
     const body = hdr.nextElementSibling;
     if (body) body.classList.toggle('col');
   }
 
-  /* ============================================================
-     GITHUB API
-  ============================================================ */
-  const LANG_COLORS = {
-    'C': '#555599', 'C++': '#f34b7d', 'Python': '#3572A5',
-    'JavaScript': '#f1e05a', 'TypeScript': '#2b7489',
-    'Rust': '#dea584', 'Go': '#00ADD8', 'HTML': '#e34c26',
-    'CSS': '#563d7c', 'Shell': '#89e051', 'Java': '#b07219',
-    'Kotlin': '#A97BFF', 'Swift': '#FA7343', 'Ruby': '#701516',
-    'PHP': '#4F5D95', 'Lua': '#000080', 'Haskell': '#5e5086'
-  };
-
-  const FEATURED = new Set(['SPAS-', 'BHC_SCHEDULER', 'ShardSim']);
-
   (async () => {
-    const list      = document.getElementById('repos-list');
-    const loadEl    = document.getElementById('repos-loading');
-    const statusEl  = document.getElementById('repos-status');
-    const detailsEl = document.getElementById('repos-details');
-    const mainDet   = document.getElementById('main-details');
-
     try {
-      const allRepos = [];
-      let page = 1, batch;
-      do {
-        const r = await fetch(
-          `https://api.github.com/users/Bhlyto/repos?per_page=100&page=${page}&sort=updated`
-        );
-        if (!r.ok) throw new Error(`GitHub API ${r.status}`);
-        batch = await r.json();
-        allRepos.push(...batch);
-        page++;
-      } while (batch.length === 100);
-
-      if (loadEl) loadEl.style.display = 'none';
-
-      const totalStars = allRepos.reduce((s, r) => s + r.stargazers_count, 0);
-      const nonForks   = allRepos.filter(r => !r.fork);
-
-      if (mainDet) {
-        mainDet.innerHTML =
-          `<strong>Bhlyto</strong><br>HPC Engineer<br><br>` +
-          `⭐ ${totalStars} stars total<br>` +
-          `📁 ${allRepos.length} repositories`;
-      }
-      if (detailsEl) {
-        detailsEl.innerHTML =
-          `📁 ${nonForks.length} repositories<br>⭐ ${totalStars} stars total`;
-      }
-      if (statusEl) statusEl.textContent = `${nonForks.length} object(s)`;
-
-      nonForks.forEach(repo => {
-        const row = document.createElement('a');
-        row.className = 'repo-row';
-        row.href      = repo.html_url;
-        row.target    = '_blank';
-        row.rel       = 'noopener noreferrer';
-
-        const icon    = FEATURED.has(repo.name) ? '📁' : '📄';
-        const lc      = LANG_COLORS[repo.language] || '#6b7a8d';
-        const dotHtml = repo.language
-          ? `<span class="ldot" style="background:${lc}"></span>`
-          : '';
-
-        row.innerHTML =
-          `<span class="ric">${icon}</span>` +
-          `<span class="rname">${repo.name}</span>` +
-          `<span class="rdesc">${repo.description || ''}</span>` +
-          `<span class="rlang">${dotHtml}<span>${repo.language || ''}</span></span>`;
-
-        list.appendChild(row);
-      });
-
-    } catch (err) {
-      if (loadEl) loadEl.textContent = 'Could not load repositories.';
-      console.error(err);
-    }
+      const r = await fetch('https://api.github.com/users/Bhlyto/repos?per_page=100&sort=updated');
+      if (!r.ok) return;
+      const repos = await r.json();
+      const stars = repos.reduce((s, r) => s + r.stargazers_count, 0);
+      const el = document.getElementById('star-count');
+      if (el) el.textContent = '⭐ ' + stars + ' stars total';
+    } catch (_) {}
   })();
 </script>
 </body>
