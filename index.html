@@ -3,785 +3,1050 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bhlyto :: HPC Engineer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <title>Bhlyto — My Computer</title>
   <style>
     /* === RESET === */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --black:  #000000;
-      --bg:     #080808;
-      --bg2:    #0f0f0f;
-      --bg3:    #141414;
-      --green:  #00ff41;
-      --green2: #39ff14;
-      --green3: #00cc33;
-      --green4: #007722;
-      --green5: #003311;
-      --text:   #c8ffc8;
-      --muted:  #669966;
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: Tahoma, 'MS Sans Serif', Arial, sans-serif;
+      font-size: 11px;
+      user-select: none;
     }
 
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Share Tech Mono', 'Courier New', monospace;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* CRT scanlines */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,.06) 2px,
-        rgba(0,0,0,.06) 4px
+    /* ================================================================
+       DESKTOP — XP Bliss wallpaper via CSS
+    ================================================================ */
+    #desktop {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      /* sky gradient */
+      background: linear-gradient(to bottom,
+        #4490c8 0%, #5aa8d8 22%, #7bbce0 38%,
+        #9dd0ea 46%, #b5ddf2 51%
       );
+    }
+
+    /* rolling hills */
+    #hills {
+      position: absolute;
+      bottom: 30px; /* sit just above taskbar */
+      left: -5%;
+      width: 110%;
+      height: 65%;
+      background: linear-gradient(to bottom,
+        #7cc84a 0%, #5caa2e 18%,
+        #4a9022 38%, #3a7518 60%,
+        #2d5c10 100%
+      );
+      border-radius: 100% 100% 0 0 / 38% 38% 0 0;
+      z-index: 0;
+    }
+
+    /* cloud blobs */
+    #clouds {
+      position: absolute;
+      top: 3%;
+      left: 0; right: 0;
+      height: 45%;
       pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 130px 55px at 18% 28%, rgba(255,255,255,.92) 0%, transparent 68%),
+        radial-gradient(ellipse 80px  35px at 28% 18%, rgba(255,255,255,.88) 0%, transparent 65%),
+        radial-gradient(ellipse 160px 65px at 62% 30%, rgba(255,255,255,.90) 0%, transparent 68%),
+        radial-gradient(ellipse 90px  38px at 75% 14%, rgba(255,255,255,.82) 0%, transparent 62%),
+        radial-gradient(ellipse 70px  30px at 88% 32%, rgba(255,255,255,.78) 0%, transparent 60%);
+    }
+
+    /* ================================================================
+       DESKTOP ICONS
+    ================================================================ */
+    #desktop-icons {
+      position: absolute;
+      top: 10px; left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .d-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 72px;
+      padding: 4px 3px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      color: white;
+      text-shadow: 1px 1px 3px #000, 1px 1px 6px #000;
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.25;
+      border-radius: 2px;
+    }
+    .d-icon:hover  { background: rgba(49,106,197,.35); border-color: rgba(255,255,255,.6); }
+    .d-icon.active { background: rgba(49,106,197,.6);  border-color: rgba(255,255,255,.85); }
+    .d-icon .ic    { font-size: 32px; line-height: 1; margin-bottom: 3px; }
+
+    /* ================================================================
+       XP WINDOW CHROME
+    ================================================================ */
+    .xp-window {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      min-width: 340px;
+      min-height: 220px;
+      border: 3px solid #1252c0;
+      border-radius: 7px 7px 0 0;
+      box-shadow: 2px 2px 14px rgba(0,0,0,.55);
+      background: #ece9d8;
+      z-index: 100;
+      outline: 1px solid #092ba0;
+    }
+    .xp-window.on-top { z-index: 200; }
+
+    /* title bar */
+    .xp-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 5px 4px 6px;
+      background: linear-gradient(to bottom,
+        #4a90d8 0%, #2870d0 6%, #1a62cc 15%,
+        #1a62cc 83%, #1050b8 100%
+      );
+      border-radius: 5px 5px 0 0;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: default;
+      flex-shrink: 0;
+      text-shadow: 1px 1px 1px rgba(0,0,50,.5);
+    }
+    .xp-titlebar .ti  { font-size: 15px; line-height: 1; flex-shrink: 0; }
+    .xp-titlebar .txt { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .xp-titlebar.inactive {
+      background: linear-gradient(to bottom, #8aa8c8 0%, #7898b8 6%, #6888a8 100%);
+    }
+
+    /* title bar buttons */
+    .tb-btns { display: flex; gap: 2px; flex-shrink: 0; }
+    .tb-btn {
+      width: 21px; height: 21px;
+      border-radius: 3px;
+      font-size: 11px; font-weight: bold;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: white; padding: 0; border: none;
+      box-shadow: inset 1px 1px 0 rgba(255,255,255,.35);
+    }
+    .tb-btn.min, .tb-btn.max {
+      background: linear-gradient(to bottom, #4a90e0 0%, #1e68cc 50%, #1858b8 100%);
+      border: 1px solid #0040a0;
+    }
+    .tb-btn.cls {
+      background: linear-gradient(to bottom, #e87050 0%, #d44020 50%, #c03010 100%);
+      border: 1px solid #901000;
+      margin-left: 2px;
+    }
+    .tb-btn:hover  { filter: brightness(1.15); }
+    .tb-btn:active { filter: brightness(.88); }
+
+    /* menu bar */
+    .xp-menubar {
+      display: flex;
+      padding: 2px 4px;
+      background: #ece9d8;
+      border-bottom: 1px solid #aca899;
+      flex-shrink: 0;
+    }
+    .xp-menubar span {
+      padding: 1px 6px; cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .xp-menubar span:hover {
+      background: #316ac5; color: white; border-color: #316ac5;
+    }
+
+    /* address toolbar */
+    .xp-toolbar {
+      display: flex; align-items: center; gap: 3px;
+      padding: 2px 5px;
+      background: #ece9d8;
+      border-bottom: 2px solid #aca899;
+      flex-shrink: 0;
+    }
+    .tb-nav {
+      padding: 1px 7px;
+      background: linear-gradient(to bottom, #f5f3ec 0%, #e0dccf 100%);
+      border: 1px solid #aca899;
+      font-size: 10px; cursor: pointer; white-space: nowrap;
+    }
+    .tb-nav:hover { background: linear-gradient(to bottom, #fff 0%, #ece9d8 100%); border-color: #316ac5; }
+    .tb-nav:disabled { opacity: .5; cursor: default; }
+    .addr-lbl { font-size: 11px; color: #444; white-space: nowrap; }
+    .addr-bar {
+      flex: 1; height: 20px;
+      border: 1px solid #7a7878;
+      padding: 1px 4px; font-size: 11px;
+      background: white; color: #333; outline: none;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    /* explorer body */
+    .xp-body { display: flex; flex: 1; overflow: hidden; }
+
+    /* left task panel */
+    .xp-left {
+      width: 185px; flex-shrink: 0;
+      background: linear-gradient(to bottom, #6ba6e8 0%, #5490d8 100%);
+      overflow-y: auto; padding: 6px 0;
+    }
+    .xp-task-section { margin: 0 6px 6px 6px; }
+    .xp-sec-hdr {
+      padding: 3px 8px;
+      background: linear-gradient(to right, #2e5ec0 0%, #4880d8 100%);
+      color: white; font-weight: bold; font-size: 11px;
+      cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #1a4aaa;
+    }
+    .xp-sec-hdr::after { content: '▲'; font-size: 8px; opacity: .8; }
+    .xp-sec-hdr.col::after { content: '▼'; }
+    .xp-sec-body { background: white; padding: 4px 0; }
+    .xp-sec-body.col { display: none; }
+    .xp-sec-body a {
+      display: flex; align-items: flex-start; gap: 4px;
+      padding: 2px 8px; color: #0040cc;
+      text-decoration: none; font-size: 11px; line-height: 1.5;
+    }
+    .xp-sec-body a:hover { text-decoration: underline; color: #0028aa; }
+    .xp-sec-body a .si { font-size: 14px; flex-shrink: 0; }
+    .detail-body { background: white; padding: 6px 8px; font-size: 11px; color: #333; line-height: 1.6; }
+
+    /* right content */
+    .xp-right { flex: 1; overflow-y: auto; padding: 10px 14px; background: white; border-left: 1px solid #aca899; }
+    .xp-section { margin-bottom: 14px; }
+    .xp-section h4 {
+      font-size: 13px; font-weight: normal;
+      color: #003399;
+      border-bottom: 1px solid #c8c8c8;
+      padding-bottom: 3px; margin-bottom: 8px;
+    }
+
+    /* folder icon grid */
+    .file-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .xp-folder {
+      display: flex; flex-direction: column; align-items: center;
+      width: 82px; padding: 4px 3px;
+      text-decoration: none; color: #000;
+      border: 1px solid transparent; font-size: 11px; text-align: center;
+      line-height: 1.25;
+    }
+    .xp-folder:hover { background: rgba(49,106,197,.12); border-color: #316ac5; }
+    .xp-folder .fi { font-size: 34px; line-height: 1; margin-bottom: 3px; }
+
+    /* drive items */
+    .xp-drive {
+      display: flex; align-items: center; gap: 8px;
+      padding: 3px 4px; text-decoration: none; color: #000;
+      border: 1px solid transparent; margin-bottom: 3px;
+    }
+    .xp-drive:hover { background: rgba(49,106,197,.12); border-color: #316ac5; }
+    .xp-drive .di { font-size: 30px; flex-shrink: 0; }
+    .drv-name { font-weight: bold; font-size: 11px; }
+    .drv-sub  { font-size: 10px; color: #666; }
+    .drv-bar  { height: 7px; width: 110px; background: #c0c0c0; border: 1px inset #888; margin-top: 2px; }
+    .drv-fill { height: 100%; background: #316ac5; }
+
+    /* about me links */
+    .about-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .about-link {
+      display: flex; align-items: center; gap: 6px;
+      padding: 3px 5px; text-decoration: none; color: #0040cc;
+      border: 1px solid transparent; font-size: 11px;
+    }
+    .about-link:hover { text-decoration: underline; border-color: #316ac5; background: rgba(49,106,197,.1); }
+    .about-link .ali { font-size: 22px; }
+    .bio { font-size: 11px; color: #333; line-height: 1.65; }
+    .bio p { margin-bottom: 5px; }
+
+    /* status bar */
+    .xp-statusbar {
+      padding: 1px 8px;
+      background: #ece9d8;
+      border-top: 1px solid #aca899;
+      font-size: 11px; color: #444; flex-shrink: 0;
+    }
+
+    /* resize grip */
+    .xp-grip {
+      position: absolute; bottom: 0; right: 0;
+      width: 14px; height: 14px;
+      cursor: se-resize; font-size: 10px;
+      display: flex; align-items: flex-end; justify-content: flex-end;
+      color: #999; padding: 1px;
+      line-height: 1;
+    }
+
+    /* ================================================================
+       REPOS WINDOW — list / details view
+    ================================================================ */
+    .repo-col-hdr {
+      display: flex; align-items: center;
+      padding: 2px 4px;
+      background: #ece9d8; border-bottom: 1px solid #aca899;
+      font-size: 11px; font-weight: bold; gap: 6px;
+      flex-shrink: 0;
+    }
+    .repo-col-hdr span:nth-child(1) { width: 22px; }
+    .repo-col-hdr span:nth-child(2) { width: 175px; }
+    .repo-col-hdr span:nth-child(3) { flex: 1; }
+    .repo-col-hdr span:nth-child(4) { width: 90px; text-align: right; }
+
+    #repos-list-wrap { flex: 1; overflow-y: auto; }
+
+    .repo-row {
+      display: flex; align-items: center; gap: 6px;
+      padding: 2px 4px;
+      text-decoration: none; color: #000;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 11px;
+    }
+    .repo-row:hover { background: #316ac5; color: white; }
+    .repo-row:hover .repo-desc-cell, .repo-row:hover .repo-lang-cell { color: rgba(255,255,255,.85); }
+    .repo-row .repo-ic   { font-size: 15px; width: 22px; flex-shrink: 0; }
+    .repo-row .repo-name-cell { width: 175px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+    .repo-row .repo-desc-cell { flex: 1; color: #555; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .repo-row .repo-lang-cell { width: 90px; text-align: right; font-size: 10px; color: #777; flex-shrink: 0; display: flex; align-items: center; justify-content: flex-end; gap: 3px; }
+    .ldot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    #repos-loading { padding: 20px; text-align: center; color: #666; font-size: 12px; }
+
+    /* ================================================================
+       TASKBAR
+    ================================================================ */
+    #taskbar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 30px;
+      background: linear-gradient(to bottom,
+        #245cdb 0%, #1e54d0 5%, #1a50cc 88%, #1444a8 100%
+      );
+      border-top: 1px solid #4070d0;
+      display: flex; align-items: stretch;
       z-index: 9999;
     }
 
-    a { color: var(--green3); text-decoration: none; }
-    a:hover { color: var(--green); text-decoration: underline; }
-
-    /* === NAV === */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      background: var(--black);
-      border-bottom: 1px solid var(--green4);
-      padding: .45rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* Start button */
+    #start-btn {
+      display: flex; align-items: center; gap: 4px;
+      padding: 0 10px 0 6px; margin: -3px 4px -3px 0;
+      background: linear-gradient(to bottom,
+        #64c84a 0%, #4eba30 10%, #3aac1a 45%, #2e9812 88%, #267010 100%
+      );
+      border: 1px solid #1a6010;
+      border-left-color: #6ad050;
+      border-radius: 0 12px 12px 0;
+      color: white; font-family: Tahoma, Arial, sans-serif;
+      font-weight: bold; font-size: 14px;
+      cursor: pointer; height: 36px; min-width: 96px;
+      text-shadow: 1px 1px 1px rgba(0,0,0,.4);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 2px 0 6px rgba(0,0,0,.4);
     }
+    #start-btn:hover  { filter: brightness(1.08); }
+    #start-btn:active { filter: brightness(.92); }
+    .start-logo { font-size: 18px; }
 
-    .logo {
-      font-family: 'VT323', monospace;
-      font-size: 1.5rem;
-      color: var(--green);
-      letter-spacing: .06em;
+    /* taskbar window buttons */
+    #tb-windows {
+      flex: 1; display: flex; align-items: center;
+      gap: 2px; padding: 2px 3px; overflow: hidden;
     }
-
-    .logo::before { content: '> '; color: var(--green4); }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 1.5rem;
+    .tb-win-btn {
+      display: flex; align-items: center; gap: 4px;
+      padding: 2px 8px; height: 24px;
+      max-width: 160px; min-width: 100px;
+      background: linear-gradient(to bottom, #3070e0 0%, #1c5ccc 50%, #1858c0 100%);
+      border: 1px solid #0840a8; border-top-color: #4888e8;
+      color: white; font-size: 11px; cursor: pointer;
+      font-family: Tahoma, Arial, sans-serif;
+      overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     }
-
-    nav ul a {
-      font-size: .8rem;
-      text-transform: lowercase;
-      letter-spacing: .06em;
-      color: var(--muted);
-      text-decoration: none;
+    .tb-win-btn.pressed {
+      background: linear-gradient(to bottom, #1a50c0 0%, #2060d4 50%, #1a50c0 100%);
+      border-color: #0030a0;
+      box-shadow: inset 1px 1px 3px rgba(0,0,0,.25);
     }
+    .tb-win-btn:hover { filter: brightness(1.1); }
 
-    nav ul a::before { content: '['; color: var(--green5); }
-    nav ul a::after  { content: ']'; color: var(--green5); }
-    nav ul a:hover   { color: var(--green); text-decoration: none; }
-
-    /* === HERO === */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 6rem 2rem 4rem;
-      max-width: 860px;
-      margin: 0 auto;
-    }
-
-    .prompt-line {
-      font-size: .82rem;
-      color: var(--muted);
-      margin-bottom: .5rem;
-    }
-
-    .prompt-line::before { content: 'bhlyto@cave:~$ '; color: var(--green); }
-
-    #hero h1 {
-      font-family: 'VT323', monospace;
-      font-size: clamp(4rem, 11vw, 7.5rem);
-      color: var(--green);
-      line-height: 1;
-      letter-spacing: .06em;
-      text-shadow: 0 0 18px rgba(0,255,65,.35);
-    }
-
-    .hero-tagline {
-      margin-top: 1rem;
-      font-size: .9rem;
-      color: var(--text);
-      max-width: 560px;
-      line-height: 1.8;
-    }
-
-    .hero-tagline .hl { color: var(--green); }
-
-    .cursor {
-      display: inline-block;
-      width: .55em;
-      height: 1em;
-      background: var(--green);
-      vertical-align: text-bottom;
-      animation: blink 1s step-end infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: .8rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      font-family: 'Share Tech Mono', 'Courier New', monospace;
-      font-size: .82rem;
-      padding: .4rem 1.1rem;
-      border: 1px solid var(--green4);
-      color: var(--muted);
-      background: transparent;
-      text-decoration: none;
-      letter-spacing: .06em;
-      transition: background .12s, color .12s, border-color .12s;
-    }
-
-    .btn:hover { background: var(--green5); color: var(--green); border-color: var(--green3); text-decoration: none; }
-
-    .btn-primary { border-color: var(--green3); color: var(--green); }
-    .btn-primary:hover { background: var(--green3); color: var(--black); }
-
-    /* === DIVIDER === */
-    .divider {
-      border: 0;
-      border-top: 1px solid var(--green5);
-    }
-
-    /* === SECTIONS === */
-    section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-    }
-
-    .section-header { margin-bottom: 2.5rem; }
-
-    .section-cmd {
-      font-size: .8rem;
-      color: var(--green3);
-      margin-bottom: .3rem;
-    }
-
-    .section-cmd::before { content: '$ '; color: var(--green4); }
-
-    .section-title {
-      font-family: 'VT323', monospace;
-      font-size: clamp(2rem, 4.5vw, 3rem);
-      color: var(--green);
-      letter-spacing: .06em;
-      line-height: 1.1;
-    }
-
-    .section-sub {
-      font-size: .8rem;
-      color: var(--muted);
-      margin-top: .3rem;
-    }
-
-    /* === ABOUT === */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-
-    @media (max-width: 720px) {
-      .about-grid { grid-template-columns: 1fr; }
-    }
-
-    .about-bio {
-      font-size: .86rem;
-      color: var(--text);
-      line-height: 1.8;
-    }
-
-    .about-bio p { margin-bottom: .8rem; }
-
-    .skills-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .35rem;
-      margin-top: 1rem;
-    }
-
-    .tag {
-      font-family: 'Share Tech Mono', 'Courier New', monospace;
-      font-size: .72rem;
-      padding: .1rem .5rem;
-      border: 1px solid var(--green5);
-      color: var(--green3);
-      background: var(--bg2);
-      letter-spacing: .04em;
-    }
-
-    .exp-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
-    .exp-item {
-      border: 1px solid var(--green5);
-      border-left: 3px solid var(--green4);
-      padding: 1rem 1.2rem;
-      background: var(--bg2);
-      transition: border-left-color .15s;
-    }
-
-    .exp-item:hover { border-left-color: var(--green3); }
-
-    .exp-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
-      margin-bottom: .3rem;
-    }
-
-    .exp-title  { font-size: .88rem; color: var(--green); }
-    .exp-period { font-size: .73rem; color: var(--green3); white-space: nowrap; flex-shrink: 0; }
-    .exp-company { font-size: .76rem; color: var(--muted); margin-bottom: .4rem; }
-    .exp-desc    { font-size: .78rem; color: var(--text); line-height: 1.65; opacity: .85; }
-
-    /* === FEATURED CARDS === */
-    .featured-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.1rem;
-    }
-
-    .feat-card {
-      border: 1px solid var(--green5);
-      background: var(--bg2);
-      padding: 1.3rem;
-      display: flex;
-      flex-direction: column;
-      gap: .75rem;
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity .4s ease, transform .4s ease, border-color .15s;
-    }
-
-    .feat-card.visible { opacity: 1; transform: none; }
-    .feat-card:hover   { border-color: var(--green4); }
-
-    .feat-card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: .6rem;
-    }
-
-    .feat-card h3 {
-      font-family: 'VT323', monospace;
-      font-size: 1.5rem;
-      color: var(--green);
-      letter-spacing: .05em;
-      line-height: 1;
-    }
-
-    .feat-card h3::before { content: './'; color: var(--green4); }
-
-    .feat-card-link {
-      font-size: .72rem;
-      color: var(--muted);
-      text-decoration: none;
-      border: 1px solid var(--green5);
-      padding: .1rem .45rem;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: color .12s, border-color .12s;
-    }
-
-    .feat-card-link:hover { color: var(--green); border-color: var(--green4); text-decoration: none; }
-
-    .feat-card .summary {
-      font-size: .8rem;
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    .feat-card .bullets {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: .38rem;
-      flex: 1;
-    }
-
-    .feat-card .bullets li {
-      font-size: .78rem;
-      color: var(--muted);
-      line-height: 1.5;
-      padding-left: 1.5rem;
-      position: relative;
-    }
-
-    .feat-card .bullets li::before {
-      content: '>> ';
-      position: absolute;
-      left: 0;
-      color: var(--green4);
-    }
-
-    .feat-card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .3rem;
-      margin-top: auto;
-    }
-
-    /* === ALL REPOS === */
-    #repos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: .8rem;
-    }
-
-    .repo-card {
-      border: 1px solid var(--green5);
-      background: var(--bg2);
-      padding: .9rem 1.1rem;
-      display: flex;
-      flex-direction: column;
-      gap: .4rem;
-      text-decoration: none;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity .4s ease, transform .4s ease, border-color .15s, background .15s;
-    }
-
-    .repo-card.visible { opacity: 1; transform: none; }
-    .repo-card:hover   { border-color: var(--green4); background: var(--bg3); text-decoration: none; }
-
-    .repo-card-name {
-      font-size: .88rem;
-      color: var(--green3);
-      word-break: break-all;
-    }
-
-    .repo-card-name::before { content: '> '; color: var(--green4); }
-
-    .repo-card-desc {
-      font-size: .76rem;
-      color: var(--muted);
-      line-height: 1.55;
-      flex: 1;
-    }
-
-    .repo-card-meta {
-      display: flex;
-      gap: .8rem;
-      margin-top: .2rem;
-    }
-
-    .repo-lang {
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-      font-size: .7rem;
-      color: var(--muted);
-    }
-
-    .lang-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    /* systray */
+    #systray {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 8px;
+      border-left: 1px solid #1040a8;
+      background: linear-gradient(to bottom, #1a4cc0 0%, #143eb4 100%);
       flex-shrink: 0;
     }
+    #systray-clock { color: white; font-size: 11px; font-family: Tahoma,Arial,sans-serif; white-space: nowrap; }
 
-    .repo-stars, .repo-forks {
-      display: flex;
-      align-items: center;
-      gap: .2rem;
-      font-size: .7rem;
-      color: var(--muted);
-    }
-
-    /* === LOADING === */
-    #loading {
-      display: flex;
+    /* ================================================================
+       START MENU
+    ================================================================ */
+    #start-menu {
+      position: fixed; bottom: 30px; left: 0;
+      width: 390px;
+      background: white;
+      border: 2px solid #0855cc;
+      box-shadow: 4px -4px 14px rgba(0,0,0,.45);
+      z-index: 9990;
+      display: none;
       flex-direction: column;
-      align-items: center;
-      gap: .6rem;
-      padding: 2rem 0;
-      color: var(--muted);
-      font-size: .82rem;
     }
-
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--green5);
-      border-top-color: var(--green3);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
+    .sm-hdr {
+      background: linear-gradient(to right, #245cdb 0%, #1a50cc 100%);
+      color: white; padding: 8px 10px;
+      font-size: 15px; font-weight: bold;
+      display: flex; align-items: center; gap: 10px;
     }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* === FOOTER === */
-    footer {
-      border-top: 1px solid var(--green5);
-      padding: 1.2rem 2rem;
-      text-align: center;
-      font-size: .76rem;
-      color: var(--muted);
+    .sm-hdr .av { font-size: 36px; }
+    .sm-cols { display: flex; flex: 1; }
+    .sm-col   { flex: 1; padding: 4px 0; }
+    .sm-col-l { border-right: 1px solid #aca899; }
+    .sm-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 10px; cursor: pointer;
+      font-size: 12px; text-decoration: none; color: #000;
     }
-
-    footer a { color: var(--green3); }
-    footer a:hover { color: var(--green); }
-
-    /* === RESPONSIVE === */
-    @media (max-width: 600px) {
-      nav ul { display: none; }
-      .hero-cta { flex-direction: column; }
+    .sm-item:hover { background: #316ac5; color: white; }
+    .sm-item .smi { font-size: 24px; width: 28px; text-align: center; }
+    .sm-sep { height: 1px; background: #aca899; margin: 4px 8px; }
+    .sm-footer {
+      background: #ece9d8; border-top: 1px solid #aca899;
+      padding: 4px 10px; display: flex; justify-content: flex-end; gap: 8px;
     }
+    .sm-footer button {
+      display: flex; align-items: center; gap: 4px; padding: 2px 8px;
+      background: linear-gradient(to bottom, #f5f3ec, #e0dccf);
+      border: 1px solid #aca899; cursor: pointer; font-size: 11px;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+    .sm-footer button:hover { background: linear-gradient(to bottom, #fff, #ece9d8); }
 
-    /* === LANG COLOUR MAP === */
-    .lang-C          { background: #555599; }
-    .lang-Python     { background: #3572A5; }
-    .lang-JavaScript { background: #f1e05a; }
-    .lang-TypeScript { background: #2b7489; }
-    .lang-Rust       { background: #dea584; }
-    .lang-Go         { background: #00ADD8; }
-    .lang-HTML       { background: #e34c26; }
-    .lang-CSS        { background: #563d7c; }
-    .lang-Shell      { background: #89e051; }
-    .lang-default    { background: #6b7a8d; }
+    /* ================================================================
+       SYSTEM TRAY NOTIFICATION BALLOON
+    ================================================================ */
+    #notif {
+      position: fixed; bottom: 36px; right: 8px;
+      width: 250px; padding: 6px 24px 8px 8px;
+      background: #ffffc0; border: 1px solid #c8a800;
+      box-shadow: 2px 2px 6px rgba(0,0,0,.35);
+      font-size: 11px; z-index: 9998;
+    }
+    #notif .notif-title { font-weight: bold; margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
+    #notif-close { position: absolute; top: 3px; right: 5px; background: none; border: none; cursor: pointer; font-size: 12px; color: #666; }
+
+    /* ================================================================
+       SCROLLBAR (XP-ish)
+    ================================================================ */
+    ::-webkit-scrollbar { width: 16px; }
+    ::-webkit-scrollbar-track { background: #c8c4b4; }
+    ::-webkit-scrollbar-thumb { background: #a8a090; border: 1px solid #888; }
+
+    /* ================================================================
+       MOBILE FALLBACK — scrollable stacked layout
+    ================================================================ */
+    @media (max-width: 700px) {
+      html, body { overflow: auto; }
+      #desktop { overflow: auto; height: auto; min-height: 100vh; padding-bottom: 40px; }
+      #hills { display: none; }
+      .xp-window { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 8px; }
+      .xp-body { flex-direction: column; }
+      .xp-left { width: 100% !important; }
+      #taskbar { position: fixed; }
+      #desktop-icons { display: none; }
+    }
   </style>
 </head>
 <body>
+<div id="desktop">
+  <div id="hills"></div>
+  <div id="clouds"></div>
 
-  <!-- NAV -->
-  <nav>
-    <span class="logo">bhlyto</span>
-    <ul>
-      <li><a href="#about">about</a></li>
-      <li><a href="#featured">projects</a></li>
-      <li><a href="#all-repos">repos</a></li>
-      <li><a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github</a></li>
-    </ul>
-  </nav>
-
-  <!-- HERO -->
-  <section id="hero">
-    <p class="prompt-line">cat whoami.txt</p>
-    <h1>BHLYTO</h1>
-    <p class="hero-tagline">
-      <span class="hl">HPC Engineer</span> — Linux, networking, hybrid clusters.<br>
-      Automating simulation pipelines since before it was cool.<br>
-      Shell scripts, Perl, C, and old numerical solvers are home.<span class="cursor"></span>
-    </p>
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="#about">./about</a>
-      <a class="btn" href="https://github.com/Bhlyto" target="_blank" rel="noopener">github --&gt;</a>
+  <!-- ============================================================
+       DESKTOP ICONS
+  ============================================================= -->
+  <div id="desktop-icons">
+    <div class="d-icon" ondblclick="showWin('win-main')" onclick="selIcon(this)">
+      <div class="ic">🖥️</div><span>My Computer</span>
     </div>
-  </section>
-
-  <hr class="divider" />
-
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-header">
-      <p class="section-cmd">cat about.txt</p>
-      <h2 class="section-title">ABOUT</h2>
-      <p class="section-sub">5+ years @ Extia. HPC. Linux. Scripting. Coffee.</p>
+    <div class="d-icon" ondblclick="showWin('win-repos')" onclick="selIcon(this)">
+      <div class="ic">📁</div><span>My Projects</span>
     </div>
+    <div class="d-icon" ondblclick="window.open('https://github.com/Bhlyto','_blank')" onclick="selIcon(this)">
+      <div class="ic">🌐</div><span>GitHub</span>
+    </div>
+    <div class="d-icon" ondblclick="showWin('win-about')" onclick="selIcon(this)">
+      <div class="ic">📄</div><span>About.txt</span>
+    </div>
+  </div>
 
-    <div class="about-grid">
-
-      <div class="about-bio">
-        <p>HPC Engineer specialised in Linux systems and networking. Managing hybrid high-performance computing environments — cloud and on-premise clusters, complex numerical simulation workloads.</p>
-        <p>Strong scripting background: Shell, PowerShell, Perl, Batch, Python. Automate workflows, prepare and launch simulation jobs, detect and resolve pipeline errors.</p>
-        <p>Background in numerical simulation software integration (automotive industry) and multi-site infrastructure administration. This site is just a place to drop personal projects done on spare time.</p>
-        <div class="skills-grid">
-          <span class="tag">Shell</span>
-          <span class="tag">Python</span>
-          <span class="tag">PowerShell</span>
-          <span class="tag">Perl</span>
-          <span class="tag">Batch</span>
-          <span class="tag">C</span>
-          <span class="tag">Linux</span>
-          <span class="tag">HPC</span>
-          <span class="tag">Networking</span>
-          <span class="tag">Cloud</span>
-          <span class="tag">On-Premise</span>
-        </div>
+  <!-- ============================================================
+       WINDOW: My Computer
+  ============================================================= -->
+  <div class="xp-window on-top" id="win-main" style="top:55px;left:230px;width:730px;height:530px">
+    <div class="xp-titlebar" id="tb-win-main" onmousedown="startDrag(event,'win-main')" onclick="activateWin('win-main')">
+      <span class="ti">🖥️</span>
+      <span class="txt">My Computer</span>
+      <div class="tb-btns">
+        <button class="tb-btn min" onclick="minWin('win-main')" title="Minimize">&#x2013;</button>
+        <button class="tb-btn max" onclick="maxWin('win-main')" title="Maximize">&#x25A1;</button>
+        <button class="tb-btn cls" onclick="minWin('win-main')" title="Close">&#x2715;</button>
       </div>
-
-      <div class="exp-list">
-        <div class="exp-item">
-          <div class="exp-header">
-            <span class="exp-title">HPC Engineer</span>
-            <span class="exp-period">2024 – present</span>
+    </div>
+    <div class="xp-menubar">
+      <span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
+    </div>
+    <div class="xp-toolbar">
+      <button class="tb-nav" disabled>&#x2190;</button>
+      <button class="tb-nav" disabled>&#x2192;</button>
+      <button class="tb-nav" disabled>&#x2191;</button>
+      <span style="width:1px;background:#aca899;align-self:stretch;margin:0 2px"></span>
+      <span class="addr-lbl">Address</span>
+      <input class="addr-bar" value="My Computer" readonly />
+      <button class="tb-nav">Go</button>
+    </div>
+    <div class="xp-body">
+      <!-- left panel -->
+      <div class="xp-left">
+        <div class="xp-task-section">
+          <div class="xp-sec-hdr" onclick="toggleSec(this)">System Tasks</div>
+          <div class="xp-sec-body">
+            <a href="#" onclick="showWin('win-repos');return false"><span class="si">📋</span> View system information</a>
+            <a href="https://github.com/Bhlyto/SPAS-" target="_blank"><span class="si">➕</span> Add or remove programs</a>
+            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">⚙️</span> Change a setting</a>
           </div>
-          <div class="exp-company">Extia :: Bucharest, Romania :: Hybrid</div>
-          <p class="exp-desc">Hybrid HPC env management. Automation scripts for job preparation, app launch, workflow automation. Low-level Linux troubleshooting, network config, performance optimisation.</p>
         </div>
-
-        <div class="exp-item">
-          <div class="exp-header">
-            <span class="exp-title">Simulation Software Integrator</span>
-            <span class="exp-period">2021 – 2023</span>
+        <div class="xp-task-section">
+          <div class="xp-sec-hdr" onclick="toggleSec(this)">Other Places</div>
+          <div class="xp-sec-body">
+            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">🌐</span> My Network Places</a>
+            <a href="#" onclick="showWin('win-about');return false"><span class="si">📄</span> My Documents</a>
+            <a href="https://github.com/Bhlyto?tab=repositories" target="_blank"><span class="si">📂</span> Shared Documents</a>
+            <a href="#" onclick="showWin('win-repos');return false"><span class="si">🎛️</span> Control Panel</a>
           </div>
-          <div class="exp-company">Extia :: Remote</div>
-          <p class="exp-desc">Install, config, integration of simulation apps on HPC clusters (automotive). Dependencies, licence servers, deployment scripts, compatibility troubleshooting.</p>
+        </div>
+        <div class="xp-task-section">
+          <div class="xp-sec-hdr" onclick="toggleSec(this)">Details</div>
+          <div class="detail-body" id="main-details">
+            <strong>Bhlyto</strong><br>HPC Engineer<br><br><small style="color:#666">Loading stats…</small>
+          </div>
         </div>
       </div>
-
-    </div>
-  </section>
-
-  <hr class="divider" />
-
-  <!-- FEATURED PROJECTS -->
-  <section id="featured">
-    <div class="section-header">
-      <p class="section-cmd">ls -la ./projects/featured/</p>
-      <h2 class="section-title">PROJECTS</h2>
-      <p class="section-sub">Personal spare-time work. Automation, HPC tooling, experiments.</p>
-    </div>
-
-    <div class="featured-grid">
-
-      <div class="feat-card">
-        <div class="feat-card-header">
-          <h3>SPAS-</h3>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/SPAS-" target="_blank" rel="noopener">view ↗</a>
+      <!-- right content -->
+      <div class="xp-right">
+        <div class="xp-section">
+          <h4>Files Stored on This Computer</h4>
+          <div class="file-grid">
+            <a class="xp-folder" href="https://github.com/Bhlyto/SPAS-" target="_blank">
+              <span class="fi">📁</span><span>SPAS-</span>
+            </a>
+            <a class="xp-folder" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank">
+              <span class="fi">📁</span><span>BHC_SCHEDULER</span>
+            </a>
+            <a class="xp-folder" href="https://github.com/Bhlyto/ShardSim" target="_blank">
+              <span class="fi">📁</span><span>ShardSim</span>
+            </a>
+            <a class="xp-folder" href="#" onclick="showWin('win-repos');return false">
+              <span class="fi">📁</span><span>All Repos</span>
+            </a>
+          </div>
         </div>
-        <p class="summary">Small Programming Agents System — local multi-agent workflow runner (Ollama + Python) with desktop GUI and per-run workspace artifacts.</p>
-        <ul class="bullets">
-          <li>Python + Ollama (local LLM) for code generation, compile, execute.</li>
-          <li>Diagnostics, dependency management, agent configuration.</li>
-          <li>GUI: workflow history, package management, env setup.</li>
-        </ul>
-        <div class="feat-card-tags">
-          <span class="tag">Python</span>
-          <span class="tag">Ollama</span>
-          <span class="tag">LLM Agents</span>
+        <div class="xp-section">
+          <h4>Hard Disk Drives</h4>
+          <a class="xp-drive" href="https://github.com/Bhlyto" target="_blank">
+            <span class="di">💾</span>
+            <div>
+              <div class="drv-name">Local Disk (C:)</div>
+              <div class="drv-sub">Shell scripts, Perl, simulation jobs</div>
+              <div class="drv-bar"><div class="drv-fill" style="width:68%"></div></div>
+            </div>
+          </a>
         </div>
-      </div>
-
-      <div class="feat-card">
-        <div class="feat-card-header">
-          <h3>BHC_SCHEDULER</h3>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank" rel="noopener">view ↗</a>
+        <div class="xp-section">
+          <h4>Devices with Removable Storage</h4>
+          <a class="xp-drive" href="https://github.com/Bhlyto?tab=repositories" target="_blank">
+            <span class="di">📀</span>
+            <div>
+              <div class="drv-name">CD Drive (D:)</div>
+              <div class="drv-sub">Public repositories</div>
+            </div>
+          </a>
         </div>
-        <p class="summary">Lightweight job orchestration daemon in C with REST API and optional web dashboard for cluster-wide job submission and tracking.</p>
-        <ul class="bullets">
-          <li>Priority queue, resource-aware allocation (CPU/RAM/GPU/disk).</li>
-          <li>Live job streaming via SSE. Role-based user &amp; API-key management.</li>
-          <li>Cloud pool (AWS/GCP/Azure) and Wake-on-LAN support.</li>
-        </ul>
-        <div class="feat-card-tags">
-          <span class="tag">C</span>
-          <span class="tag">REST API</span>
-          <span class="tag">Distributed</span>
-        </div>
-      </div>
-
-      <div class="feat-card">
-        <div class="feat-card-header">
-          <h3>ShardSim</h3>
-          <a class="feat-card-link" href="https://github.com/Bhlyto/ShardSim" target="_blank" rel="noopener">view ↗</a>
-        </div>
-        <p class="summary">Distributed multi-fidelity simulation framework with domain-specific learning and adaptive refinement.</p>
-        <ul class="bullets">
-          <li>Central decision core, multi-layer simulation, adaptive refinement.</li>
-          <li>Surrogate ML feedback loop and domain-specific learning.</li>
-          <li>Coarse-to-fine pipeline, distributed orchestration.</li>
-        </ul>
-        <div class="feat-card-tags">
-          <span class="tag">Simulation</span>
-          <span class="tag">ML</span>
-          <span class="tag">Distributed</span>
+        <div class="xp-section">
+          <h4>About Me :)</h4>
+          <div class="bio">
+            <p>HPC Engineer specialised in Linux, networking, hybrid clusters. This cave runs on coffee and command lines.</p>
+            <p>5+ years @ Extia. Managing hybrid HPC environments — cloud + on-prem. Shell scripts from 2006, Perl, numerical simulation software (automotive), C.</p>
+            <p>This site is just a place to drop personal projects done on spare time.</p>
+          </div>
+          <div class="about-links">
+            <a class="about-link" href="https://github.com/Bhlyto" target="_blank"><span class="ali">🐙</span> Github</a>
+            <a class="about-link" href="#" onclick="showWin('win-repos');return false"><span class="ali">📁</span> My Projects</a>
+            <a class="about-link" href="#" onclick="showWin('win-about');return false"><span class="ali">📄</span> About.txt</a>
+          </div>
         </div>
       </div>
-
     </div>
-  </section>
+    <div class="xp-statusbar" id="main-status">4 objects</div>
+    <div class="xp-grip" onmousedown="startResize(event,'win-main')">◢</div>
+  </div>
 
-  <hr class="divider" />
-
-  <!-- ALL REPOS -->
-  <section id="all-repos">
-    <div class="section-header">
-      <p class="section-cmd">curl -s api.github.com/users/bhlyto/repos | jq .</p>
-      <h2 class="section-title">ALL REPOS</h2>
-      <p class="section-sub">Every public repo, sorted by last updated.</p>
+  <!-- ============================================================
+       WINDOW: All Repositories
+  ============================================================= -->
+  <div class="xp-window" id="win-repos" style="top:90px;left:170px;width:700px;height:500px;display:none">
+    <div class="xp-titlebar inactive" id="tb-win-repos" onmousedown="startDrag(event,'win-repos')" onclick="activateWin('win-repos')">
+      <span class="ti">📂</span>
+      <span class="txt">My Projects — All Repositories</span>
+      <div class="tb-btns">
+        <button class="tb-btn min" onclick="minWin('win-repos')" title="Minimize">&#x2013;</button>
+        <button class="tb-btn max" onclick="maxWin('win-repos')" title="Maximize">&#x25A1;</button>
+        <button class="tb-btn cls" onclick="minWin('win-repos')" title="Close">&#x2715;</button>
+      </div>
     </div>
-    <div id="loading">
-      <div class="spinner"></div>
-      fetching repos...
+    <div class="xp-menubar">
+      <span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
     </div>
-    <div id="repos-grid"></div>
-  </section>
+    <div class="xp-toolbar">
+      <button class="tb-nav" onclick="showWin('win-main')">&#x2190; Back</button>
+      <button class="tb-nav" disabled>&#x2192;</button>
+      <button class="tb-nav" disabled>&#x2191;</button>
+      <span style="width:1px;background:#aca899;align-self:stretch;margin:0 2px"></span>
+      <span class="addr-lbl">Address</span>
+      <input class="addr-bar" value="https://github.com/Bhlyto?tab=repositories" readonly />
+      <button class="tb-nav">Go</button>
+    </div>
+    <div class="xp-body">
+      <div class="xp-left">
+        <div class="xp-task-section">
+          <div class="xp-sec-hdr" onclick="toggleSec(this)">File and Folder Tasks</div>
+          <div class="xp-sec-body">
+            <a href="https://github.com/new" target="_blank"><span class="si">📁</span> Make a new folder</a>
+            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">🌐</span> Publish this folder</a>
+          </div>
+        </div>
+        <div class="xp-task-section">
+          <div class="xp-sec-hdr" onclick="toggleSec(this)">Other Places</div>
+          <div class="xp-sec-body">
+            <a href="#" onclick="showWin('win-main');return false"><span class="si">🖥️</span> My Computer</a>
+            <a href="https://github.com/Bhlyto" target="_blank"><span class="si">🌐</span> My Network Places</a>
+          </div>
+        </div>
+        <div class="xp-task-section">
+          <div class="xp-sec-hdr" onclick="toggleSec(this)">Details</div>
+          <div class="detail-body" id="repos-details">Loading…</div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:white;border-left:1px solid #aca899">
+        <div class="repo-col-hdr">
+          <span></span><span>Name</span><span>Description</span><span>Language</span>
+        </div>
+        <div id="repos-loading" style="padding:20px;text-align:center;color:#666">Fetching repositories…</div>
+        <div id="repos-list-wrap" style="flex:1;overflow-y:auto">
+          <div id="repos-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="xp-statusbar" id="repos-status">Loading…</div>
+    <div class="xp-grip" onmousedown="startResize(event,'win-repos')">◢</div>
+  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    bhlyto@cave ~ :: <a href="https://github.com/Bhlyto" target="_blank" rel="noopener">github.com/Bhlyto</a> :: HPC Engineer :: powered by GitHub API
-  </footer>
+  <!-- ============================================================
+       WINDOW: About.txt (Notepad style)
+  ============================================================= -->
+  <div class="xp-window" id="win-about" style="top:120px;left:280px;width:520px;height:380px;display:none">
+    <div class="xp-titlebar inactive" id="tb-win-about" onmousedown="startDrag(event,'win-about')" onclick="activateWin('win-about')">
+      <span class="ti">📄</span>
+      <span class="txt">About.txt — Notepad</span>
+      <div class="tb-btns">
+        <button class="tb-btn min" onclick="minWin('win-about')" title="Minimize">&#x2013;</button>
+        <button class="tb-btn max" onclick="maxWin('win-about')" title="Maximize">&#x25A1;</button>
+        <button class="tb-btn cls" onclick="minWin('win-about')" title="Close">&#x2715;</button>
+      </div>
+    </div>
+    <div class="xp-menubar">
+      <span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span>
+    </div>
+    <textarea readonly style="
+      flex:1;resize:none;border:none;outline:none;padding:8px;
+      font-family:'Courier New',monospace;font-size:12px;
+      background:white;color:#000;line-height:1.6;overflow:auto;
+    ">
+whoami
+------
+Bhlyto — HPC Engineer
 
-  <script>
-    /* ── Language colour map ──────────────────────────────────── */
-    const LANG_COLORS = {
-      'C': '#555599', 'C++': '#f34b7d', 'Python': '#3572A5',
-      'JavaScript': '#f1e05a', 'TypeScript': '#2b7489',
-      'Rust': '#dea584', 'Go': '#00ADD8', 'HTML': '#e34c26',
-      'CSS': '#563d7c', 'Shell': '#89e051', 'Java': '#b07219',
-      'Kotlin': '#A97BFF', 'Swift': '#FA7343', 'Ruby': '#701516',
-      'PHP': '#4F5D95', 'Lua': '#000080', 'Haskell': '#5e5086'
-    };
+I live in my cave in the dark, eating command lines and GPU cores
+for breakfast. 5+ years managing hybrid HPC environments at Extia.
 
-    /* ── Intersection-observer fade-in ───────────────────────── */
-    function onIntersect(entries) {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+Experience:
+  - HPC Engineer @ Extia (2024 – present)
+    Bucharest, Romania (Hybrid)
+    Hybrid HPC env management. Automation scripts for job prep,
+    app launch, workflow automation. Low-level Linux troubleshooting,
+    network config, performance optimisation.
+
+  - Simulation Software Integrator @ Extia (2021 – 2023)
+    Remote
+    Install, config, integration of simulation apps on HPC clusters
+    for the automotive industry. Dependencies, licence servers,
+    deployment scripts, compatibility troubleshooting.
+
+Skills:
+  Shell (sh scripts from 2006), Perl, Python, PowerShell, Batch,
+  C, Linux, HPC, Networking, Cloud, On-Premise,
+  Numerical simulation software (2017 vintage)
+
+Projects:
+  SPAS-          - Small Programming Agents System (Python+Ollama)
+  BHC_SCHEDULER  - Job orchestration daemon in C with REST API
+  ShardSim       - Distributed multi-fidelity simulation framework
+
+Links:
+  https://github.com/Bhlyto
+
+This site is just a place to show what I'm building in my spare time.
+    </textarea>
+    <div class="xp-statusbar">Ln 1, Col 1</div>
+    <div class="xp-grip" onmousedown="startResize(event,'win-about')">◢</div>
+  </div>
+
+  <!-- ============================================================
+       SYSTEM TRAY NOTIFICATION BALLOON
+  ============================================================= -->
+  <div id="notif">
+    <button id="notif-close" onclick="document.getElementById('notif').style.display='none'">&#x2715;</button>
+    <div class="notif-title">⚠️ Your computer might be at risk</div>
+    <div>Antivirus software might not be installed.<br>Click this balloon to fix this problem.</div>
+  </div>
+
+  <!-- ============================================================
+       TASKBAR
+  ============================================================= -->
+  <div id="taskbar">
+    <button id="start-btn" onclick="toggleStart()">
+      <span class="start-logo">🪟</span>
+      <span>start</span>
+    </button>
+    <div id="tb-windows">
+      <button class="tb-win-btn pressed" id="tbw-main" onclick="toggleWin('win-main')">🖥️ My Computer</button>
+      <button class="tb-win-btn" id="tbw-repos" onclick="toggleWin('win-repos')" style="display:none">📂 My Projects</button>
+      <button class="tb-win-btn" id="tbw-about" onclick="toggleWin('win-about')" style="display:none">📄 About.txt</button>
+    </div>
+    <div id="systray">
+      <span title="Volume">🔊</span>
+      <span id="systray-clock">12:00 PM</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       START MENU
+  ============================================================= -->
+  <div id="start-menu">
+    <div class="sm-hdr">
+      <span class="av">👤</span><span>Bhlyto</span>
+    </div>
+    <div class="sm-cols">
+      <div class="sm-col sm-col-l">
+        <a class="sm-item" href="https://github.com/Bhlyto/SPAS-" target="_blank">
+          <span class="smi">🤖</span>
+          <div><div style="font-weight:bold">SPAS-</div><div style="font-size:10px;color:#666">LLM Agents System</div></div>
+        </a>
+        <a class="sm-item" href="https://github.com/Bhlyto/BHC_SCHEDULER" target="_blank">
+          <span class="smi">⚙️</span>
+          <div><div style="font-weight:bold">BHC_SCHEDULER</div><div style="font-size:10px;color:#666">Job orchestration daemon</div></div>
+        </a>
+        <a class="sm-item" href="https://github.com/Bhlyto/ShardSim" target="_blank">
+          <span class="smi">🔬</span>
+          <div><div style="font-weight:bold">ShardSim</div><div style="font-size:10px;color:#666">Simulation framework</div></div>
+        </a>
+        <div class="sm-sep"></div>
+        <a class="sm-item" href="#" onclick="showWin('win-repos');closeStart();return false">
+          <span class="smi">📁</span> All Programs
+        </a>
+      </div>
+      <div class="sm-col">
+        <a class="sm-item" href="#" onclick="showWin('win-main');closeStart();return false">
+          <span class="smi">🖥️</span> My Computer
+        </a>
+        <a class="sm-item" href="#" onclick="showWin('win-about');closeStart();return false">
+          <span class="smi">📄</span> My Documents
+        </a>
+        <a class="sm-item" href="#" onclick="showWin('win-repos');closeStart();return false">
+          <span class="smi">📂</span> My Projects
+        </a>
+        <div class="sm-sep"></div>
+        <a class="sm-item" href="https://github.com/Bhlyto" target="_blank">
+          <span class="smi">🌐</span> GitHub
+        </a>
+      </div>
+    </div>
+    <div class="sm-footer">
+      <button onclick="closeStart()">🔴 Turn Off Computer</button>
+    </div>
+  </div>
+
+</div><!-- #desktop -->
+
+<script>
+  /* ================================================================
+     CLOCK
+  ================================================================ */
+  function updateClock() {
+    const d = new Date(), h = d.getHours(), m = d.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12  = h % 12 || 12;
+    document.getElementById('systray-clock').textContent =
+      `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+  }
+  updateClock();
+  setInterval(updateClock, 15000);
+
+  /* ================================================================
+     WINDOW MANAGEMENT
+  ================================================================ */
+  let zTop = 200;
+
+  function activateWin(id) {
+    // Dim all titlebars
+    document.querySelectorAll('.xp-titlebar').forEach(t => t.classList.add('inactive'));
+    // Bring target to front, activate titlebar
+    const win = document.getElementById(id);
+    if (!win) return;
+    zTop++;
+    win.style.zIndex = zTop;
+    win.classList.add('on-top');
+    document.getElementById('tb-win-' + id).classList.remove('inactive');
+    // Update taskbar button states
+    document.querySelectorAll('.tb-win-btn').forEach(b => b.classList.remove('pressed'));
+    const tbBtn = document.getElementById('tbw-' + id.replace('win-',''));
+    if (tbBtn) tbBtn.classList.add('pressed');
+  }
+
+  function showWin(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    win.style.display = 'flex';
+    activateWin(id);
+    // Show taskbar button
+    const tbId = 'tbw-' + id.replace('win-','');
+    const tb = document.getElementById(tbId);
+    if (tb) tb.style.display = 'flex';
+    closeStart();
+  }
+
+  function minWin(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    win.style.display = 'none';
+    const tbId = 'tbw-' + id.replace('win-','');
+    const tb = document.getElementById(tbId);
+    if (tb) tb.classList.remove('pressed');
+  }
+
+  function toggleWin(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    if (win.style.display === 'none') {
+      showWin(id);
+    } else {
+      const tbId = 'tbw-' + id.replace('win-','');
+      const tb = document.getElementById(tbId);
+      if (tb && tb.classList.contains('pressed')) {
+        minWin(id);
+      } else {
+        activateWin(id);
+      }
+    }
+  }
+
+  /* maximize / restore */
+  const savedBounds = {};
+  function maxWin(id) {
+    const win = document.getElementById(id);
+    if (!win) return;
+    if (savedBounds[id]) {
+      const b = savedBounds[id];
+      win.style.left = b.left; win.style.top = b.top;
+      win.style.width = b.width; win.style.height = b.height;
+      delete savedBounds[id];
+    } else {
+      savedBounds[id] = { left: win.style.left, top: win.style.top, width: win.style.width, height: win.style.height };
+      win.style.left = '0'; win.style.top = '0';
+      win.style.width = '100vw'; win.style.height = 'calc(100vh - 30px)';
+    }
+    activateWin(id);
+  }
+
+  /* ================================================================
+     DRAGGING
+  ================================================================ */
+  let drag = null, dox = 0, doy = 0;
+  function startDrag(e, id) {
+    if (e.target.closest('.tb-btns')) return;
+    e.preventDefault();
+    drag = id;
+    const r = document.getElementById(id).getBoundingClientRect();
+    dox = e.clientX - r.left; doy = e.clientY - r.top;
+    activateWin(id);
+  }
+  document.addEventListener('mousemove', e => {
+    if (!drag) return;
+    const w = document.getElementById(drag);
+    w.style.left = (e.clientX - dox) + 'px';
+    w.style.top  = Math.max(0, e.clientY - doy) + 'px';
+  });
+  document.addEventListener('mouseup', () => { drag = null; });
+
+  /* ================================================================
+     RESIZING
+  ================================================================ */
+  let rsz = null, rsx, rsy, rsw, rsh;
+  function startResize(e, id) {
+    e.preventDefault(); e.stopPropagation();
+    rsz = id;
+    const r = document.getElementById(id).getBoundingClientRect();
+    rsx = e.clientX; rsy = e.clientY; rsw = r.width; rsh = r.height;
+  }
+  document.addEventListener('mousemove', e => {
+    if (!rsz) return;
+    const w = document.getElementById(rsz);
+    w.style.width  = Math.max(340, rsw + (e.clientX - rsx)) + 'px';
+    w.style.height = Math.max(220, rsh + (e.clientY - rsy)) + 'px';
+  });
+  document.addEventListener('mouseup', () => { rsz = null; });
+
+  /* ================================================================
+     SECTION TOGGLE
+  ================================================================ */
+  function toggleSec(hdr) {
+    hdr.classList.toggle('col');
+    const body = hdr.nextElementSibling;
+    if (body) body.classList.toggle('col');
+  }
+
+  /* ================================================================
+     START MENU
+  ================================================================ */
+  function toggleStart() {
+    const sm = document.getElementById('start-menu');
+    sm.style.display = sm.style.display === 'flex' ? 'none' : 'flex';
+  }
+  function closeStart() {
+    document.getElementById('start-menu').style.display = 'none';
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) closeStart();
+  });
+
+  /* ================================================================
+     DESKTOP ICON SELECTION
+  ================================================================ */
+  function selIcon(el) {
+    document.querySelectorAll('.d-icon').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.d-icon')) document.querySelectorAll('.d-icon').forEach(i => i.classList.remove('active'));
+  });
+
+  /* ================================================================
+     AUTO-DISMISS NOTIFICATION
+  ================================================================ */
+  setTimeout(() => {
+    const n = document.getElementById('notif');
+    if (n) n.style.display = 'none';
+  }, 9000);
+
+  /* ================================================================
+     GITHUB API — Language colours
+  ================================================================ */
+  const LANG_COLORS = {
+    'C': '#555599', 'C++': '#f34b7d', 'Python': '#3572A5',
+    'JavaScript': '#f1e05a', 'TypeScript': '#2b7489',
+    'Rust': '#dea584', 'Go': '#00ADD8', 'HTML': '#e34c26',
+    'CSS': '#563d7c', 'Shell': '#89e051', 'Java': '#b07219',
+    'Kotlin': '#A97BFF', 'Swift': '#FA7343', 'Ruby': '#701516',
+    'PHP': '#4F5D95', 'Lua': '#000080', 'Haskell': '#5e5086'
+  };
+
+  const FEATURED = new Set(['SPAS-', 'BHC_SCHEDULER', 'ShardSim']);
+
+  (async () => {
+    const list      = document.getElementById('repos-list');
+    const loadEl    = document.getElementById('repos-loading');
+    const statusEl  = document.getElementById('repos-status');
+    const detailsEl = document.getElementById('repos-details');
+    const mainDet   = document.getElementById('main-details');
+
+    try {
+      const allRepos = [];
+      let page = 1, batch;
+      do {
+        const r = await fetch(`https://api.github.com/users/Bhlyto/repos?per_page=100&page=${page}&sort=updated`);
+        if (!r.ok) throw new Error(`GitHub API ${r.status}`);
+        batch = await r.json();
+        allRepos.push(...batch);
+        page++;
+      } while (batch.length === 100);
+
+      loadEl.style.display = 'none';
+
+      const totalStars = allRepos.reduce((s, r) => s + r.stargazers_count, 0);
+      const nonForks   = allRepos.filter(r => !r.fork);
+
+      if (mainDet) {
+        mainDet.innerHTML = `<strong>Bhlyto</strong><br>HPC Engineer<br><br>⭐ ${totalStars} stars total<br>📁 ${allRepos.length} repositories`;
+      }
+      if (detailsEl) {
+        detailsEl.innerHTML = `📁 ${nonForks.length} repositories<br>⭐ ${totalStars} stars total`;
+      }
+      statusEl.textContent = `${nonForks.length} object(s)`;
+
+      nonForks.forEach(repo => {
+        const row = document.createElement('a');
+        row.className = 'repo-row';
+        row.href = repo.html_url;
+        row.target = '_blank';
+        row.rel = 'noopener noreferrer';
+
+        const icon    = FEATURED.has(repo.name) ? '📁' : '📄';
+        const lc      = LANG_COLORS[repo.language] || '#6b7a8d';
+        const dotHtml = repo.language
+          ? `<span class="ldot" style="background:${lc}"></span>`
+          : '';
+
+        row.innerHTML = `
+          <span class="repo-ic">${icon}</span>
+          <span class="repo-name-cell">${repo.name}</span>
+          <span class="repo-desc-cell">${repo.description || ''}</span>
+          <span class="repo-lang-cell">${dotHtml}<span>${repo.language || ''}</span></span>
+        `;
+        list.appendChild(row);
       });
+
+    } catch (err) {
+      if (loadEl) loadEl.textContent = 'Could not load repositories.';
+      console.error(err);
     }
-    const observer = new IntersectionObserver(onIntersect, { threshold: 0.08 });
-
-    document.querySelectorAll('.feat-card').forEach((el, i) => {
-      el.style.transitionDelay = `${i * 0.08}s`;
-      observer.observe(el);
-    });
-
-    /* ── Staggered repo card animation helper ─────────────────── */
-    function observeCard(card, delay) {
-      // delay = stagger of 40 ms per card, capped at 500 ms total
-      card.style.transition = [
-        `opacity .45s ${delay}s ease`,
-        `transform .45s ${delay}s ease`,
-        'border-color .25s ease',
-        'background .25s ease'
-      ].join(', ');
-      observer.observe(card);
-    }
-
-    /* ── Fetch & render repos ─────────────────────────────────── */
-    const FEATURED_NAMES = new Set(['SPAS-', 'BHC_SCHEDULER', 'ShardSim']);
-    const USERNAME = 'Bhlyto';
-
-    function buildRepoCard(repo) {
-      const card = document.createElement('a');
-      card.className = 'repo-card';
-      card.href = repo.html_url;
-      card.target = '_blank';
-      card.rel = 'noopener noreferrer';
-
-      const name = document.createElement('div');
-      name.className = 'repo-card-name';
-      name.textContent = repo.name;
-      card.appendChild(name);
-
-      const desc = document.createElement('div');
-      desc.className = 'repo-card-desc';
-      desc.textContent = repo.description || 'No description available.';
-      card.appendChild(desc);
-
-      const meta = document.createElement('div');
-      meta.className = 'repo-card-meta';
-
-      if (repo.language) {
-        const langEl = document.createElement('span');
-        langEl.className = 'repo-lang';
-        const dot = document.createElement('span');
-        dot.className = 'lang-dot';
-        dot.style.background = LANG_COLORS[repo.language] || '#6b7a8d';
-        langEl.appendChild(dot);
-        langEl.appendChild(document.createTextNode(repo.language));
-        meta.appendChild(langEl);
-      }
-
-      if (repo.stargazers_count > 0) {
-        const stars = document.createElement('span');
-        stars.className = 'repo-stars';
-        stars.innerHTML = `<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>${repo.stargazers_count}`;
-        meta.appendChild(stars);
-      }
-
-      if (repo.forks_count > 0) {
-        const forks = document.createElement('span');
-        forks.className = 'repo-forks';
-        forks.innerHTML = `<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>${repo.forks_count}`;
-        meta.appendChild(forks);
-      }
-
-      card.appendChild(meta);
-      return card;
-    }
-
-    (async () => {
-      const grid     = document.getElementById('repos-grid');
-      const loadEl   = document.getElementById('loading');
-
-      try {
-        const allRepos = [];
-        let page = 1, batch;
-        do {
-          const r = await fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100&page=${page}&sort=updated`);
-          if (!r.ok) throw new Error(`GitHub API ${r.status}`);
-          batch = await r.json();
-          allRepos.push(...batch);
-          page++;
-        } while (batch.length === 100);
-
-        loadEl.style.display = 'none';
-
-        if (!allRepos.length) {
-          grid.innerHTML = '<p style="color:var(--muted);text-align:center">No public repositories found.</p>';
-          return;
-        }
-
-        allRepos
-          .filter(r => !FEATURED_NAMES.has(r.name))
-          .forEach((repo, i) => {
-            const card = buildRepoCard(repo);
-            grid.appendChild(card);
-            // stagger: 40 ms per card, capped at 500 ms
-            observeCard(card, Math.min(i * 0.04, 0.5));
-          });
-
-      } catch (err) {
-        loadEl.style.display = 'none';
-        grid.innerHTML = '<p style="color:var(--muted);text-align:center">Could not load repositories — check back later.</p>';
-        console.error(err);
-      }
-    })();
-  </script>
+  })();
+</script>
 </body>
 </html>
